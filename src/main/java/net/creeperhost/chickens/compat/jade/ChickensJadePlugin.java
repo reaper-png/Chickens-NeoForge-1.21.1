@@ -61,16 +61,9 @@ public final class ChickensJadePlugin implements IWailaPlugin {
                         .append(": " + stats.getStrength()));
             }
 
-            if (!chicken.isBaby()) {
-                int remainingMinutes = chicken.getLayProgress();
-                if (remainingMinutes <= 0) {
-                    tooltip.add(Component.translatable("entity.ChickensChicken.top.nextEggSoon"));
-                } else {
-                    tooltip.add(Component.translatable("entity.ChickensChicken.top.layProgress")
-                            .append(" " + remainingMinutes + " ")
-                            .append(Component.translatable("entity.ChickensChicken.top.layProgressEnd")));
-                }
-            }
+            // Jade already supplies its own chicken egg countdown.
+            // Do not append a second, approximate timer here.
+            // This overlay only adds Chickens-specific tier and analyzed stats.
         }
     }
 }
