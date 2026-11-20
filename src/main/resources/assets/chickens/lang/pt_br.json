@@ -16,5 +16,7 @@
   "block.chickens.roost": "Poleiro",
   "item.liquid_egg.water.name": "Ovo de Água",
   "item.liquid_egg.lava.name": "Ovo de Lava",
-  "item.liquid_egg.tooltip": "Contém 1.000 mB de líquido. Use no chão ou em um tanque."
+  "item.liquid_egg.tooltip": "Contém 1.000 mB de líquido. Use no chão ou em um tanque.",
+  "jei.chickens.breeding": "Cruzamento de galinhas",
+  "jei.chickens.laying": "Produção das galinhas"
 }
