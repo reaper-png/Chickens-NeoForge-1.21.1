@@ -5,20 +5,20 @@
     {
       "type": "chickens:quartz_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:lava_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:soulsand_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     }
   ]
 }

@@ -5,164 +5,164 @@
     {
       "type": "chickens:white_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:flint_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:log_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:sand_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:string_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:glowstone_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:gunpowder_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:redstone_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:glass_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:iron_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:coal_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:gold_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:snowball_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:water_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:clay_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:leather_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:netherwart_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:diamond_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:blaze_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:slime_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:ender_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:ghast_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:emerald_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:magma_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:pshard_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:pcrystal_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     },
     {
       "type": "chickens:obsidian_chicken",
       "weight": 10,
-      "minCount": 4,
-      "maxCount": 4
+      "minCount": 3,
+      "maxCount": 5
     }
   ]
 }
