@@ -7,6 +7,14 @@ import net.creeperhost.chickens.init.ModEntities;
 import net.creeperhost.chickens.init.ModItems;
 import net.creeperhost.chickens.init.ModMenus;
 import net.creeperhost.chickens.item.LiquidEggItemHandler;
+import net.creeperhost.chickens.registry.ChickenSpecies;
+import net.creeperhost.chickens.registry.ChickensRegistry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.minecraft.world.entity.animal.Chicken;
@@ -27,6 +35,7 @@ public final class ChickensMod {
         ModCreativeTabs.TABS.register(modEventBus);
         modEventBus.addListener(ChickensMod::onAttributes);
         modEventBus.addListener(ChickensMod::onCapabilities);
+        modEventBus.addListener(ChickensMod::onSpawnPlacements);
     }
 
     private static void onCapabilities(RegisterCapabilitiesEvent event) {
@@ -38,6 +47,44 @@ public final class ChickensMod {
                 (roost, side) -> roost.automation());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlocks.BREEDER_TILE.get(),
                 (breeder, side) -> breeder.automation());
+    }
+
+    /**
+     * Port of the legacy Chickens spawn predicate.
+     * Biome spawn lists are supplied separately by NeoForge biome modifiers.
+     */
+    private static void onSpawnPlacements(RegisterSpawnPlacementsEvent event) {
+        for (ChickenSpecies species : ChickensRegistry.getItems()) {
+            if (species.spawnType() == ChickenSpecies.SpawnType.NONE) {
+                continue;
+            }
+            var holder = ModEntities.CHICKENS.get(species.id());
+            if (holder == null) {
+                throw new IllegalStateException("Missing registered chicken: " + species.id());
+            }
+            event.register(
+                    holder.get(),
+                    SpawnPlacements.Type.ON_GROUND,
+                    Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    (type, level, reason, pos, random) -> canNaturallySpawn(species, level, pos),
+                    RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        }
+    }
+
+    private static boolean canNaturallySpawn(
+            ChickenSpecies species, ServerLevelAccessor level, BlockPos pos) {
+        if (!level.getBlockState(pos.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON)) {
+            return false;
+        }
+        if (level.getRawBrightness(pos, 0) <= 8) {
+            return false;
+        }
+        return switch (species.spawnType()) {
+            case NONE -> false;
+            case NORMAL -> level.dimensionType().hasSkyLight();
+            case HELL -> level.dimensionType().ultraWarm();
+            case SNOW -> true; // The original SNOW predicate has no dimension check.
+        };
     }
 
     private static void onAttributes(EntityAttributeCreationEvent event) {

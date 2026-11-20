@@ -1,0 +1,24 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#c:is_nether",
+  "spawners": [
+    {
+      "type": "chickens:quartz_chicken",
+      "weight": 10,
+      "minCount": 4,
+      "maxCount": 4
+    },
+    {
+      "type": "chickens:lava_chicken",
+      "weight": 10,
+      "minCount": 4,
+      "maxCount": 4
+    },
+    {
+      "type": "chickens:soulsand_chicken",
+      "weight": 10,
+      "minCount": 4,
+      "maxCount": 4
+    }
+  ]
+}
