@@ -33,6 +33,14 @@ public final class SpeciesLayConfig {
 
     private SpeciesLayConfig() {}
 
+    /**
+     * Force config creation/loading during common setup, before a chicken
+     * first calculates its resource-laying interval.
+     */
+    public static void initialize() {
+        Values.COEFFICIENTS.size();
+    }
+
     public static float coefficientFor(String id) {
         return Values.COEFFICIENTS.getOrDefault("chickens:" + id, 1.0f);
     }
