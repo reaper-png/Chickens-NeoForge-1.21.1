@@ -22,7 +22,15 @@ tasks.withType(JavaCompile).configureEach {
 
 // Real JUnit tests: Gradle previously discovered a main() smoke check but
 // no test framework/annotated test methods.
+repositories {
+    maven { url = uri('https://maven.blamejared.com') }
+}
+
 dependencies {
+    // Optional: JEI discovers the plugin only when JEI is installed.
+    // The API is not bundled with the Chickens mod JAR.
+    compileOnly 'mezz.jei:jei-1.21.1-common-api:19.57.0.447'
+    compileOnly 'mezz.jei:jei-1.21.1-neoforge-api:19.57.0.447'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
 }
