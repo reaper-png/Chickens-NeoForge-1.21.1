@@ -4,7 +4,7 @@ license="MIT"
 [[mods]]
 modId="chickens"
 version="0.0.1-wip"
-displayName="Chickens (original 1.0.32 port — work in progress)"
+displayName="Chickens"
 authors="CreeperHost, gigabit101 (original), community port in progress"
 description="Direct port of original CreeperHost Chickens 1.0.32. Work in progress: not feature complete."
 [[dependencies.chickens]]
