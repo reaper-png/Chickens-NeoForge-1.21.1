@@ -1,6 +1,7 @@
 package net.creeperhost.chickens;
 
 import net.creeperhost.chickens.events.SmartChickenConversion;
+import net.creeperhost.chickens.config.ChickensConfig;
 import net.creeperhost.chickens.init.ModBlocks;
 import net.creeperhost.chickens.init.ModCreativeTabs;
 import net.creeperhost.chickens.init.ModEntities;
@@ -21,13 +22,16 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.minecraft.world.entity.animal.Chicken;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 /** Chickens 1.0.32 legacy-only NeoForge port, no ModernChickens dependencies. */
 @Mod(ChickensMod.MODID)
 public final class ChickensMod {
     public static final String MODID = "chickens";
-    public ChickensMod(IEventBus modEventBus) {
+    public ChickensMod(IEventBus modEventBus, ModContainer container) {
+        container.registerConfig(ModConfig.Type.COMMON, ChickensConfig.SPEC);
         ModBlocks.BLOCKS.register(modEventBus);
         ModBlocks.BLOCK_ENTITIES.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
