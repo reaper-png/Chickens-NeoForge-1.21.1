@@ -37,11 +37,6 @@ public final class SpeciesLayConfig {
         return Values.COEFFICIENTS.getOrDefault("chickens:" + id, 1.0f);
     }
 
-    /** Matches original ChickensRegistryItem.getMinLayTime() math. */
-    public static int scaledTicks(int baseTicks, float coefficient) {
-        return (int) Math.max(1.0f, baseTicks * coefficient);
-    }
-
     private static Map<String, Float> load() {
         Path configFile = FMLPaths.CONFIGDIR.get()
                 .resolve("chickens").resolve("chickens.json");
