@@ -24,6 +24,7 @@ tasks.withType(JavaCompile).configureEach {
 // no test framework/annotated test methods.
 repositories {
     maven { url = uri('https://maven.blamejared.com') }
+    maven { url = uri('https://api.modrinth.com/maven') }
 }
 
 dependencies {
@@ -31,6 +32,8 @@ dependencies {
     // The API is not bundled with the Chickens mod JAR.
     compileOnly 'mezz.jei:jei-1.21.1-common-api:19.57.0.447'
     compileOnly 'mezz.jei:jei-1.21.1-neoforge-api:19.57.0.447'
+    // Jade is optional and not bundled inside Chickens.
+    compileOnly 'maven.modrinth:jade:15.10.6+neoforge'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
 }
