@@ -1,6 +1,7 @@
 package net.creeperhost.chickens.registry;
 
 import java.util.ArrayList;
+import net.creeperhost.chickens.config.SpeciesLayConfig;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -125,7 +126,10 @@ public final class ChickensRegistry {
         throw new IllegalStateException("Invalid breeding weight");
     }
 
-    public static int getMinLayTime(ChickenSpecies type) { return 6000 * getTier(type); }
+    public static int getMinLayTime(ChickenSpecies type) {
+        return SpeciesLayConfig.scaledTicks(6000 * getTier(type),
+                SpeciesLayConfig.coefficientFor(type.id()));
+    }
     public static int getMaxLayTime(ChickenSpecies type) { return getMinLayTime(type) * 2; }
     public static float getChildChance(ChickenSpecies child) {
         if (!child.hasParents()) return 0;
