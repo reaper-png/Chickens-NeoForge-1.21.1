@@ -1,6 +1,6 @@
 package net.creeperhost.chickens;
 
-import net.creeperhost.chickens.entity.EntityChickensChicken;
+import net.creeperhost.chickens.events.SmartChickenConversion;
 import net.creeperhost.chickens.init.ModBlocks;
 import net.creeperhost.chickens.init.ModCreativeTabs;
 import net.creeperhost.chickens.init.ModEntities;
@@ -15,6 +15,7 @@ import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.minecraft.world.entity.animal.Chicken;
@@ -36,6 +37,7 @@ public final class ChickensMod {
         modEventBus.addListener(ChickensMod::onAttributes);
         modEventBus.addListener(ChickensMod::onCapabilities);
         modEventBus.addListener(ChickensMod::onSpawnPlacements);
+        NeoForge.EVENT_BUS.addListener(SmartChickenConversion::onEntityInteract);
     }
 
     private static void onCapabilities(RegisterCapabilitiesEvent event) {
