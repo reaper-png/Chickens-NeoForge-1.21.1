@@ -2,6 +2,7 @@ package net.creeperhost.chickens;
 
 import net.creeperhost.chickens.events.SmartChickenConversion;
 import net.creeperhost.chickens.config.ChickensConfig;
+import net.creeperhost.chickens.config.SpeciesLayConfig;
 import net.creeperhost.chickens.init.ModBlocks;
 import net.creeperhost.chickens.init.ModCreativeTabs;
 import net.creeperhost.chickens.init.ModEntities;
@@ -24,6 +25,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 /** Chickens 1.0.32 legacy-only NeoForge port, no ModernChickens dependencies. */
@@ -41,7 +43,12 @@ public final class ChickensMod {
         modEventBus.addListener(ChickensMod::onAttributes);
         modEventBus.addListener(ChickensMod::onCapabilities);
         modEventBus.addListener(ChickensMod::onSpawnPlacements);
+        modEventBus.addListener(ChickensMod::onCommonSetup);
         NeoForge.EVENT_BUS.addListener(SmartChickenConversion::onEntityInteract);
+    }
+
+    private static void onCommonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(SpeciesLayConfig::initialize);
     }
 
     private static void onCapabilities(RegisterCapabilitiesEvent event) {
