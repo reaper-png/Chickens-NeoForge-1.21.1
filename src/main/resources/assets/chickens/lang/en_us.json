@@ -109,5 +109,6 @@
   "block.chickens.roost": "Roost",
   "gui.hold.shift.tooltip": "Hold <Shift> for stats",
   "jei.chickens.breeding": "Chicken Breeding",
-  "jei.chickens.laying": "Chicken Laying"
+  "jei.chickens.laying": "Chicken Laying",
+  "jei.chickens.drops": "Chicken Drops"
 }
