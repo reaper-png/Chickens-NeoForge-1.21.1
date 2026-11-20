@@ -19,5 +19,6 @@
   "item.liquid_egg.tooltip": "Contém 1.000 mB de líquido. Use no chão ou em um tanque.",
   "jei.chickens.breeding": "Cruzamento de galinhas",
   "jei.chickens.laying": "Produção das galinhas",
-  "jei.chickens.drops": "Drops das galinhas"
+  "jei.chickens.drops": "Drops das galinhas",
+  "config.jade.plugin_chickens.chicken_info": "Detalhes da galinha"
 }
