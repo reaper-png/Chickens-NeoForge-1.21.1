@@ -2,6 +2,7 @@ package net.creeperhost.chickens.registry;
 
 import java.util.ArrayList;
 import net.creeperhost.chickens.config.SpeciesLayConfig;
+import net.creeperhost.chickens.config.LayTimeMath;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -127,7 +128,7 @@ public final class ChickensRegistry {
     }
 
     public static int getMinLayTime(ChickenSpecies type) {
-        return SpeciesLayConfig.scaledTicks(6000 * getTier(type),
+        return LayTimeMath.scaledTicks(6000 * getTier(type),
                 SpeciesLayConfig.coefficientFor(type.id()));
     }
     public static int getMaxLayTime(ChickenSpecies type) { return getMinLayTime(type) * 2; }
