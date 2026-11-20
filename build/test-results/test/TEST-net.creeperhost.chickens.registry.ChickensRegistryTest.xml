@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="net.creeperhost.chickens.registry.ChickensRegistryTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-20T20:15:48.170Z" hostname="DESKTOP-OD6OOLF" time="0.016">
+  <properties/>
+  <testcase name="flintAndLogCanBreedCoalWithoutSpawningUnrelatedSpecies()" classname="net.creeperhost.chickens.registry.ChickensRegistryTest" time="0.01"/>
+  <testcase name="sameSpeciesParentsRetainTheOriginalDoubleWeight()" classname="net.creeperhost.chickens.registry.ChickensRegistryTest" time="0.002"/>
+  <testcase name="catalogsExactlyTheOriginalFortySixBreeds()" classname="net.creeperhost.chickens.registry.ChickensRegistryTest" time="0.001"/>
+  <testcase name="allPedigreesPointToRegisteredChickens()" classname="net.creeperhost.chickens.registry.ChickensRegistryTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

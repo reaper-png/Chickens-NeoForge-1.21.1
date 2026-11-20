@@ -1,0 +1,518 @@
+[
+  {
+    "id": "smart_chicken",
+    "product": "minecraft:egg",
+    "parents": [],
+    "spawn": "none",
+    "background": 16777215,
+    "foreground": 16776960,
+    "dye": ""
+  },
+  {
+    "id": "white_chicken",
+    "product": "minecraft:white_dye",
+    "parents": [],
+    "spawn": "normal",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": ""
+  },
+  {
+    "id": "yellow_chicken",
+    "product": "minecraft:yellow_dye",
+    "parents": [],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "yellow"
+  },
+  {
+    "id": "blue_chicken",
+    "product": "minecraft:lapis_lazuli",
+    "parents": [],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "blue"
+  },
+  {
+    "id": "green_chicken",
+    "product": "minecraft:green_dye",
+    "parents": [],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "green"
+  },
+  {
+    "id": "red_chicken",
+    "product": "minecraft:red_dye",
+    "parents": [],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "red"
+  },
+  {
+    "id": "black_chicken",
+    "product": "minecraft:black_dye",
+    "parents": [],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "black"
+  },
+  {
+    "id": "pink_chicken",
+    "product": "minecraft:pink_dye",
+    "parents": [
+      "red_chicken",
+      "white_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "pink"
+  },
+  {
+    "id": "purple_chicken",
+    "product": "minecraft:purple_dye",
+    "parents": [
+      "blue_chicken",
+      "red_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "purple"
+  },
+  {
+    "id": "orange_chicken",
+    "product": "minecraft:orange_dye",
+    "parents": [
+      "red_chicken",
+      "yellow_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "orange"
+  },
+  {
+    "id": "light_blue_chicken",
+    "product": "minecraft:light_blue_dye",
+    "parents": [
+      "white_chicken",
+      "blue_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "light_blue"
+  },
+  {
+    "id": "lime_chicken",
+    "product": "minecraft:lime_dye",
+    "parents": [
+      "green_chicken",
+      "white_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "lime"
+  },
+  {
+    "id": "gray_chicken",
+    "product": "minecraft:gray_dye",
+    "parents": [
+      "black_chicken",
+      "white_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "gray"
+  },
+  {
+    "id": "cyan_chicken",
+    "product": "minecraft:cyan_dye",
+    "parents": [
+      "blue_chicken",
+      "green_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "cyan"
+  },
+  {
+    "id": "light_gray_chicken",
+    "product": "minecraft:light_gray_dye",
+    "parents": [
+      "gray_chicken",
+      "white_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "light_gray"
+  },
+  {
+    "id": "magenta_chicken",
+    "product": "minecraft:magenta_dye",
+    "parents": [
+      "purple_chicken",
+      "pink_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "magenta"
+  },
+  {
+    "id": "flint_chicken",
+    "product": "minecraft:flint",
+    "parents": [],
+    "spawn": "normal",
+    "background": 7039815,
+    "foreground": 10724213,
+    "dye": ""
+  },
+  {
+    "id": "quartz_chicken",
+    "product": "minecraft:quartz",
+    "parents": [],
+    "spawn": "hell",
+    "background": 5046272,
+    "foreground": 1703936,
+    "dye": ""
+  },
+  {
+    "id": "log_chicken",
+    "product": "minecraft:oak_log",
+    "parents": [],
+    "spawn": "normal",
+    "background": 9995373,
+    "foreground": 5407576,
+    "dye": ""
+  },
+  {
+    "id": "sand_chicken",
+    "product": "minecraft:sand",
+    "parents": [],
+    "spawn": "normal",
+    "background": 15525297,
+    "foreground": 10985580,
+    "dye": ""
+  },
+  {
+    "id": "string_chicken",
+    "product": "minecraft:string",
+    "parents": [
+      "black_chicken",
+      "log_chicken"
+    ],
+    "spawn": "normal",
+    "background": 3348992,
+    "foreground": 8388608,
+    "dye": ""
+  },
+  {
+    "id": "glowstone_chicken",
+    "product": "minecraft:glowstone_dust",
+    "parents": [
+      "quartz_chicken",
+      "yellow_chicken"
+    ],
+    "spawn": "normal",
+    "background": 16777062,
+    "foreground": 16776960,
+    "dye": ""
+  },
+  {
+    "id": "gunpowder_chicken",
+    "product": "minecraft:gunpowder",
+    "parents": [
+      "sand_chicken",
+      "flint_chicken"
+    ],
+    "spawn": "normal",
+    "background": 10066329,
+    "foreground": 4210752,
+    "dye": ""
+  },
+  {
+    "id": "redstone_chicken",
+    "product": "minecraft:redstone",
+    "parents": [
+      "red_chicken",
+      "sand_chicken"
+    ],
+    "spawn": "normal",
+    "background": 15073280,
+    "foreground": 8388608,
+    "dye": ""
+  },
+  {
+    "id": "glass_chicken",
+    "product": "minecraft:glass",
+    "parents": [
+      "quartz_chicken",
+      "redstone_chicken"
+    ],
+    "spawn": "normal",
+    "background": 16777215,
+    "foreground": 15658751,
+    "dye": ""
+  },
+  {
+    "id": "iron_chicken",
+    "product": "minecraft:iron_ingot",
+    "parents": [
+      "flint_chicken",
+      "white_chicken"
+    ],
+    "spawn": "normal",
+    "background": 16777164,
+    "foreground": 16764108,
+    "dye": ""
+  },
+  {
+    "id": "coal_chicken",
+    "product": "minecraft:coal",
+    "parents": [
+      "flint_chicken",
+      "log_chicken"
+    ],
+    "spawn": "normal",
+    "background": 2500134,
+    "foreground": 0,
+    "dye": ""
+  },
+  {
+    "id": "brown_chicken",
+    "product": "minecraft:brown_dye",
+    "parents": [
+      "red_chicken",
+      "green_chicken"
+    ],
+    "spawn": "none",
+    "background": 15921906,
+    "foreground": 0,
+    "dye": "brown"
+  },
+  {
+    "id": "gold_chicken",
+    "product": "minecraft:gold_nugget",
+    "parents": [
+      "iron_chicken",
+      "yellow_chicken"
+    ],
+    "spawn": "normal",
+    "background": 13421568,
+    "foreground": 16777088,
+    "dye": ""
+  },
+  {
+    "id": "snowball_chicken",
+    "product": "minecraft:snowball",
+    "parents": [
+      "blue_chicken",
+      "log_chicken"
+    ],
+    "spawn": "snow",
+    "background": 3390463,
+    "foreground": 35020,
+    "dye": ""
+  },
+  {
+    "id": "water_chicken",
+    "product": "chickens:liquid_egg|minecraft:water",
+    "parents": [
+      "gunpowder_chicken",
+      "snowball_chicken"
+    ],
+    "spawn": "normal",
+    "background": 153,
+    "foreground": 8421631,
+    "dye": ""
+  },
+  {
+    "id": "lava_chicken",
+    "product": "chickens:liquid_egg|minecraft:lava",
+    "parents": [
+      "coal_chicken",
+      "quartz_chicken"
+    ],
+    "spawn": "hell",
+    "background": 13382400,
+    "foreground": 16776960,
+    "dye": ""
+  },
+  {
+    "id": "clay_chicken",
+    "product": "minecraft:clay_ball",
+    "parents": [
+      "snowball_chicken",
+      "sand_chicken"
+    ],
+    "spawn": "normal",
+    "background": 13421772,
+    "foreground": 12566463,
+    "dye": ""
+  },
+  {
+    "id": "leather_chicken",
+    "product": "minecraft:leather",
+    "parents": [
+      "string_chicken",
+      "brown_chicken"
+    ],
+    "spawn": "normal",
+    "background": 10985580,
+    "foreground": 9539985,
+    "dye": ""
+  },
+  {
+    "id": "netherwart_chicken",
+    "product": "minecraft:nether_wart",
+    "parents": [
+      "brown_chicken",
+      "glowstone_chicken"
+    ],
+    "spawn": "normal",
+    "background": 8388608,
+    "foreground": 3348992,
+    "dye": ""
+  },
+  {
+    "id": "diamond_chicken",
+    "product": "minecraft:diamond",
+    "parents": [
+      "glass_chicken",
+      "gold_chicken"
+    ],
+    "spawn": "normal",
+    "background": 10079487,
+    "foreground": 15135487,
+    "dye": ""
+  },
+  {
+    "id": "blaze_chicken",
+    "product": "minecraft:blaze_rod",
+    "parents": [
+      "gold_chicken",
+      "lava_chicken"
+    ],
+    "spawn": "normal",
+    "background": 16777062,
+    "foreground": 16724736,
+    "dye": ""
+  },
+  {
+    "id": "slime_chicken",
+    "product": "minecraft:slime_ball",
+    "parents": [
+      "clay_chicken",
+      "green_chicken"
+    ],
+    "spawn": "normal",
+    "background": 39219,
+    "foreground": 10092475,
+    "dye": ""
+  },
+  {
+    "id": "ender_chicken",
+    "product": "minecraft:ender_pearl",
+    "parents": [
+      "diamond_chicken",
+      "netherwart_chicken"
+    ],
+    "spawn": "normal",
+    "background": 6656,
+    "foreground": 6707,
+    "dye": ""
+  },
+  {
+    "id": "ghast_chicken",
+    "product": "minecraft:ghast_tear",
+    "parents": [
+      "white_chicken",
+      "blaze_chicken"
+    ],
+    "spawn": "normal",
+    "background": 16777164,
+    "foreground": 16777215,
+    "dye": ""
+  },
+  {
+    "id": "emerald_chicken",
+    "product": "minecraft:emerald",
+    "parents": [
+      "diamond_chicken",
+      "green_chicken"
+    ],
+    "spawn": "normal",
+    "background": 52224,
+    "foreground": 13056,
+    "dye": ""
+  },
+  {
+    "id": "magma_chicken",
+    "product": "minecraft:magma_cream",
+    "parents": [
+      "slime_chicken",
+      "blaze_chicken"
+    ],
+    "spawn": "normal",
+    "background": 1705216,
+    "foreground": 0,
+    "dye": ""
+  },
+  {
+    "id": "pshard_chicken",
+    "product": "minecraft:prismarine_shard",
+    "parents": [
+      "water_chicken",
+      "blue_chicken"
+    ],
+    "spawn": "normal",
+    "background": 4423790,
+    "foreground": 10472380,
+    "dye": ""
+  },
+  {
+    "id": "pcrystal_chicken",
+    "product": "minecraft:prismarine_crystals",
+    "parents": [
+      "water_chicken",
+      "emerald_chicken"
+    ],
+    "spawn": "normal",
+    "background": 5138785,
+    "foreground": 14674396,
+    "dye": ""
+  },
+  {
+    "id": "obsidian_chicken",
+    "product": "minecraft:obsidian",
+    "parents": [
+      "water_chicken",
+      "lava_chicken"
+    ],
+    "spawn": "normal",
+    "background": 526350,
+    "foreground": 4602464,
+    "dye": ""
+  },
+  {
+    "id": "soulsand_chicken",
+    "product": "minecraft:soul_sand",
+    "parents": [],
+    "spawn": "hell",
+    "background": 4534565,
+    "foreground": 13971208,
+    "dye": ""
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DDD",
+    "DED",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:gray_dye"
+    },
+    "E": {
+      "item": "minecraft:egg"
+    }
+  },
+  "result": {
+    "id": "chickens:colored_egg",
+    "components": {
+      "minecraft:custom_data": {
+        "colourid": 7,
+        "id": "chickens:gray_chicken"
+      }
+    }
+  }
+}

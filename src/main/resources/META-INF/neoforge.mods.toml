@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+[[mods]]
+modId="chickens"
+version="0.0.1-wip"
+displayName="Chickens (original 1.0.32 port — work in progress)"
+authors="CreeperHost, gigabit101 (original), community port in progress"
+description="Direct port of original CreeperHost Chickens 1.0.32. Work in progress: not feature complete."
+[[dependencies.chickens]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.21.2)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.chickens]]
+modId="neoforge"
+type="required"
+versionRange="[21.1,)"
+ordering="NONE"
+side="BOTH"

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="net.creeperhost.chickens.blockentities.HenhouseFuelTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-20T20:15:48.096Z" hostname="DESKTOP-OD6OOLF" time="0.04">
+  <properties/>
+  <testcase name="newHayProducesOneHundredItemsAndOneDirt()" classname="net.creeperhost.chickens.blockentities.HenhouseFuelTest" time="0.036"/>
+  <testcase name="largeCollectionNeverDuplicatesByproducts()" classname="net.creeperhost.chickens.blockentities.HenhouseFuelTest" time="0.001"/>
+  <testcase name="crossingEnergyBoundaryConsumesOnlyRequiredHay()" classname="net.creeperhost.chickens.blockentities.HenhouseFuelTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

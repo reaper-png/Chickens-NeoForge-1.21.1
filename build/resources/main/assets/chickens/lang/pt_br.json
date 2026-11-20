@@ -1,0 +1,20 @@
+{
+  "itemGroup.chickens": "Chickens",
+  "item.chickens.chicken_item": "Galinha",
+  "item.chickens.spawn_egg": "Ovo de invocação de galinha",
+  "item.chickens.colored_egg": "Ovo de galinha colorida",
+  "item.chickens.liquid_egg": "Ovo líquido",
+  "item.chickens.analyzer": "Analisador de galinhas",
+  "item.chickens.catcher": "Capturador de galinhas",
+  "block.chickens.henhouse": "Galinheiro",
+  "block.chickens.henhouse_acacia": "Galinheiro de acácia",
+  "block.chickens.henhouse_birch": "Galinheiro de bétula",
+  "block.chickens.henhouse_dark_oak": "Galinheiro de carvalho escuro",
+  "block.chickens.henhouse_jungle": "Galinheiro de madeira da selva",
+  "block.chickens.henhouse_spruce": "Galinheiro de pinheiro",
+  "block.chickens.breeder": "Reprodutor de galinhas",
+  "block.chickens.roost": "Poleiro",
+  "item.liquid_egg.water.name": "Ovo de Água",
+  "item.liquid_egg.lava.name": "Ovo de Lava",
+  "item.liquid_egg.tooltip": "Contém 1.000 mB de líquido. Use no chão ou em um tanque."
+}

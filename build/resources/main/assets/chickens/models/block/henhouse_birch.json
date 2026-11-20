@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures":{
+        "particle":"chickens:block/henhouse_top_birch",
+        "up":"chickens:block/henhouse_top_birch",
+        "down":"chickens:block/henhouse_side_birch",
+        "south": "chickens:block/henhouse_side_birch",
+        "north": "chickens:block/henhouse_front_birch",
+        "east": "chickens:block/henhouse_side_birch",
+        "west": "chickens:block/henhouse_side_birch"
+    }
+}
