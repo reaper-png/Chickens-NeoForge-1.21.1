@@ -1,6 +1,7 @@
 package net.creeperhost.chickens.compat.jade;
 
 import net.creeperhost.chickens.ChickensMod;
+import net.creeperhost.chickens.config.ChickensConfig;
 import net.creeperhost.chickens.entity.EntityChickensChicken;
 import net.creeperhost.chickens.registry.ChickenSpecies;
 import net.creeperhost.chickens.registry.ChickensRegistry;
@@ -51,7 +52,7 @@ public final class ChickensJadePlugin implements IWailaPlugin {
             tooltip.add(Component.translatable("entity.ChickensChicken.top.tier")
                     .append(": " + ChickensRegistry.getTier(breed)));
 
-            if (chicken.isAnalyzed()) {
+            if (chicken.isAnalyzed() || ChickensConfig.alwaysShowStats()) {
                 var stats = chicken.stats();
                 tooltip.add(Component.translatable("entity.ChickensChicken.top.growth")
                         .append(": " + stats.getGrowth()));
