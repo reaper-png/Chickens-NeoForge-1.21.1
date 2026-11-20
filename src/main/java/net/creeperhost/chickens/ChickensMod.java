@@ -11,7 +11,7 @@ import net.creeperhost.chickens.registry.ChickenSpecies;
 import net.creeperhost.chickens.registry.ChickensRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
@@ -64,7 +64,7 @@ public final class ChickensMod {
             }
             event.register(
                     holder.get(),
-                    SpawnPlacements.Type.ON_GROUND,
+                    SpawnPlacementTypes.ON_GROUND,
                     Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                     (type, level, reason, pos, random) -> canNaturallySpawn(species, level, pos),
                     RegisterSpawnPlacementsEvent.Operation.REPLACE);
