@@ -1,0 +1,32 @@
+# Gradle / NeoForge
+.gradle/
+build/
+run/
+out/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# Java
+*.class
+*.log
+hs_err_pid*
+replay_pid*
+
+# Local config and secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated artifacts
+*.jar
+*.zip
