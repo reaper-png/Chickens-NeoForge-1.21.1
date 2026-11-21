@@ -1,6 +1,8 @@
 package net.creeperhost.chickens.registry;
 
 import net.creeperhost.chickens.config.SpeciesLayConfig;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +16,7 @@ import com.mojang.logging.LogUtils;
 /** Produces the original product unless a valid lay_item override is configured. */
 public final class ChickenProducts {
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Set<String> INVALID_WARNED = ConcurrentHashMap.newKeySet();
 
     private ChickenProducts() {}
 
@@ -24,8 +27,10 @@ public final class ChickenProducts {
         if (configured != null) {
             ItemStack replacement = fromDescriptor(configured);
             if (!replacement.isEmpty()) return replacement;
-            LOGGER.warn("Invalid lay_item '{}' for chickens:{}; using original product",
-                    configured, species.id());
+            if (INVALID_WARNED.add(species.id() + "=" + configured)) {
+                LOGGER.warn("Invalid lay_item '{}' for chickens:{}; using original product",
+                        configured, species.id());
+            }
         }
         return fromDescriptor(species.product());
     }
