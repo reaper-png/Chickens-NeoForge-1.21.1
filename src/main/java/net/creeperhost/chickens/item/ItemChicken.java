@@ -48,7 +48,13 @@ public class ItemChicken extends Item {
         if (chicken == null) return InteractionResult.FAIL;
         ChickenStats stats = ChickenStatsCodec.read(stack);
         chicken.applyStats(stats);
-        chicken.setBaby(ChickenItemData.wasBaby(stack));
+        Integer exactAge = ChickenItemData.capturedAgeTicks(stack);
+        if (exactAge != null) {
+            chicken.setAge(exactAge);
+        } else {
+            chicken.setBaby(ChickenItemData.wasBaby(stack)); // Legacy captured items.
+        }
+        chicken.setAnalyzed(ChickenItemData.wasAnalyzed(stack));
         if (ChickenItemData.loveTicks(stack) > 0) chicken.setInLoveTime(ChickenItemData.loveTicks(stack));
         chicken.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, context.getRotation(), 0);
         if (!context.getLevel().addFreshEntity(chicken)) return InteractionResult.FAIL;
