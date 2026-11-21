@@ -1,6 +1,11 @@
 package net.creeperhost.chickens.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.HashMap;
+import java.util.Map;
+import net.creeperhost.chickens.entity.EntityChickensChicken;
+import net.creeperhost.chickens.init.ModEntities;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.creeperhost.chickens.item.ChickenItemData;
 import net.creeperhost.chickens.registry.ChickenSpecies;
 import net.minecraft.client.Minecraft;
@@ -26,6 +31,8 @@ import org.joml.Quaternionf;
  */
 public final class ChickenItemRenderer extends BlockEntityWithoutLevelRenderer {
     private ChickenModel<Chicken> model;
+    private final Map<String, EntityChickensChicken> previews = new HashMap<>();
+    private ClientLevel previewLevel;
 
     // GUI-only scale tuned for a full-size chicken within a 16x16 item slot.
     // Do not change ground/hand scale or actual entity dimensions.
@@ -43,9 +50,43 @@ public final class ChickenItemRenderer extends BlockEntityWithoutLevelRenderer {
         ChickenSpecies species = ChickenItemData.type(stack);
         if (species == null) return;
 
+        // The inventory must use the same adult renderer as an in-world
+        // chicken. Rendering a raw ChickenModel skips the entity renderer's
+        // age/pose setup and produces a visibly incorrect silhouette.
+        if (displayContext == ItemDisplayContext.GUI) {
+            ClientLevel level = Minecraft.getInstance().level;
+            if (level != null) {
+                if (previewLevel != level) {
+                    previews.clear();
+                    previewLevel = level;
+                }
+                EntityChickensChicken chicken = previews.get(species.id());
+                if (chicken == null) {
+                    chicken = ModEntities.create(species, level);
+                    if (chicken == null) return;
+                    chicken.setAge(0);
+                    previews.put(species.id(), chicken);
+                }
+                poseStack.pushPose();
+                try {
+                    poseStack.translate(0.5D, 0.08D, 0.5D);
+                    poseStack.mulPose(new Quaternionf().rotateY((float) Math.toRadians(35)));
+                    poseStack.scale(GUI_SCALE, GUI_SCALE, GUI_SCALE);
+                    Minecraft.getInstance().getEntityRenderDispatcher().render(
+                            chicken, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F,
+                            poseStack, buffers, packedLight);
+                } finally {
+                    poseStack.popPose();
+                }
+                return;
+            }
+        }
+
+        // Fallback for rendering item stacks without a loaded client world.
         if (model == null) {
             model = new ChickenModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.CHICKEN));
         }
+        model.young = false;
 
         ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(
                 "chickens", "textures/entity/" + species.id() + ".png");
@@ -77,5 +118,6 @@ public final class ChickenItemRenderer extends BlockEntityWithoutLevelRenderer {
     public void onResourceManagerReload(ResourceManager manager) {
         super.onResourceManagerReload(manager);
         model = null; // Re-bake after resource-pack changes.
+        previews.clear(); // Cached visual entities must also be refreshed.
     }
 }
