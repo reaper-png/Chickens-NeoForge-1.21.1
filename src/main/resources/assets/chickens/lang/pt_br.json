@@ -23,5 +23,22 @@
   "jei.chickens.breeding": "Cruzamento de galinhas",
   "jei.chickens.laying": "Produção das galinhas",
   "jei.chickens.drops": "Drops das galinhas",
-  "config.jade.plugin_chickens.chicken_info": "Detalhes da galinha"
+  "config.jade.plugin_chickens.chicken_info": "Detalhes da galinha",
+  "item.colored_egg.tooltip": "Arremesse para ter uma chance de nascer uma galinha.",
+  "item.colored_egg.white.name": "Ovo de Galinha Branca",
+  "item.colored_egg.orange.name": "Ovo de Galinha Laranja",
+  "item.colored_egg.magenta.name": "Ovo de Galinha Magenta",
+  "item.colored_egg.light_blue.name": "Ovo de Galinha Azul-Clara",
+  "item.colored_egg.yellow.name": "Ovo de Galinha Amarela",
+  "item.colored_egg.lime.name": "Ovo de Galinha Verde-Limão",
+  "item.colored_egg.pink.name": "Ovo de Galinha Rosa",
+  "item.colored_egg.gray.name": "Ovo de Galinha Cinza",
+  "item.colored_egg.light_gray.name": "Ovo de Galinha Cinza-Clara",
+  "item.colored_egg.cyan.name": "Ovo de Galinha Ciano",
+  "item.colored_egg.purple.name": "Ovo de Galinha Roxa",
+  "item.colored_egg.blue.name": "Ovo de Galinha Azul",
+  "item.colored_egg.brown.name": "Ovo de Galinha Marrom",
+  "item.colored_egg.green.name": "Ovo de Galinha Verde",
+  "item.colored_egg.red.name": "Ovo de Galinha Vermelha",
+  "item.colored_egg.black.name": "Ovo de Galinha Preta"
 }
