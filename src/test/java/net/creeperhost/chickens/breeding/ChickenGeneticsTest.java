@@ -39,4 +39,45 @@ final class ChickenGeneticsTest {
         assertEquals(1, result.getGrowth());
         assertEquals(1, result.getStrength());
     }
+    @Test
+    void sameSpeciesBreedingUsesExactlyThreeMutationRolls() {
+        var coal = ChickensRegistry.getByRegistryName("coal_chicken");
+        var rolls = new java.util.concurrent.atomic.AtomicInteger();
+        ChickenStats child = ChickenGenetics.offspring(coal, coal, coal,
+                new ChickenStats(2, 3, 4), new ChickenStats(4, 5, 6),
+                bound -> {
+                    assertEquals(2, bound);
+                    rolls.incrementAndGet();
+                    return 0;
+                });
+        assertEquals(3, rolls.get());
+        assertEquals(4, child.getGain());
+        assertEquals(5, child.getGrowth());
+        assertEquals(6, child.getStrength());
+    }
+
+    @Test
+    void differentSpeciesParentInheritanceUsesNoMutationRolls() {
+        var coal = ChickensRegistry.getByRegistryName("coal_chicken");
+        var flint = ChickensRegistry.getByRegistryName("flint_chicken");
+        ChickenStats child = ChickenGenetics.offspring(coal, flint, coal,
+                new ChickenStats(6, 7, 8), new ChickenStats(2, 3, 4),
+                bound -> { throw new AssertionError("Different-species inheritance must not roll mutations"); });
+        assertEquals(6, child.getGain());
+        assertEquals(7, child.getGrowth());
+        assertEquals(8, child.getStrength());
+    }
+
+    @Test
+    void invalidParentStatsAreBoundedBeforeInheritance() {
+        var coal = ChickensRegistry.getByRegistryName("coal_chicken");
+        var flint = ChickensRegistry.getByRegistryName("flint_chicken");
+        ChickenStats child = ChickenGenetics.offspring(coal, flint, coal,
+                new ChickenStats(-10, 0, 100), new ChickenStats(2, 3, 4),
+                bound -> { throw new AssertionError("Parent copy must not use RNG"); });
+        assertEquals(1, child.getGain());
+        assertEquals(1, child.getGrowth());
+        assertEquals(10, child.getStrength());
+    }
+
 }
