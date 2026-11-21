@@ -21,15 +21,15 @@ public final class MachineOutputs {
         for (int slot = first; slot < inventory.getSlots(); slot++) {
             ItemStack existing = inventory.getStackInSlot(slot);
             if (existing.isEmpty() || !ItemStack.isSameItemSameComponents(existing, produced)) continue;
-            int capacity = Math.min(inventory.getSlotLimit(slot), maxStack) - existing.getCount();
-            if (capacity > 0) remaining -= Math.min(remaining, capacity);
+            remaining = OutputCapacityMath.remainingAfterSlot(
+                    remaining, existing.getCount(), inventory.getSlotLimit(slot), maxStack);
             if (remaining == 0) return true;
         }
         // Empty output slots can hold the remainder.
         for (int slot = first; slot < inventory.getSlots(); slot++) {
             if (!inventory.getStackInSlot(slot).isEmpty()) continue;
-            int capacity = Math.min(inventory.getSlotLimit(slot), maxStack);
-            if (capacity > 0) remaining -= Math.min(remaining, capacity);
+            remaining = OutputCapacityMath.remainingAfterSlot(
+                    remaining, 0, inventory.getSlotLimit(slot), maxStack);
             if (remaining == 0) return true;
         }
         return false;
