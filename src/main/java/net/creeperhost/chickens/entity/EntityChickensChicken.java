@@ -1,7 +1,6 @@
 package net.creeperhost.chickens.entity;
 
 import net.creeperhost.chickens.data.ChickenStats;
-import net.creeperhost.chickens.entity.LayProgressMath;
 import net.creeperhost.chickens.blockentities.BlockEntityHenhouse;
 import net.creeperhost.chickens.breeding.ChickenGenetics;
 import net.creeperhost.chickens.registry.ChickenProducts;
