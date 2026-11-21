@@ -47,6 +47,29 @@ public final class ChickenItemData {
         });
     }
 
+    /** Exact age (negative for babies), analyzer state and existing legacy fields. */
+    public static void saveCapturedState(ItemStack stack, int ageTicks, int loveTicks, boolean analyzed) {
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, root -> {
+            root.putBoolean("baby", ageTicks < 0); // Retain compatibility with legacy item readers.
+            root.putInt("age_ticks", ageTicks);
+            root.putInt("love", Math.max(0, loveTicks));
+            root.putBoolean("analyzed", analyzed);
+        });
+    }
+
+    /** Null for items captured before exact age was stored. */
+    public static Integer capturedAgeTicks(ItemStack stack) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        if (data == null) return null;
+        CompoundTag root = data.copyTag();
+        return root.contains("age_ticks", 3) ? root.getInt("age_ticks") : null;
+    }
+
+    public static boolean wasAnalyzed(ItemStack stack) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        return data != null && data.copyTag().getBoolean("analyzed");
+    }
+
     public static boolean wasBaby(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
         return data != null && data.copyTag().getBoolean("baby");
