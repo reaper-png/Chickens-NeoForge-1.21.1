@@ -77,3 +77,44 @@ tasks.register('verifyPackagedModVersion') {
 tasks.named('build') {
     dependsOn tasks.named('verifyPackagedModVersion')
 }
+
+
+// Catch broken release artifacts, not just missing source resources: 46 chicken
+// skins and corresponding loot tables plus the eight machine block drops
+// must actually be present inside the published JAR.
+tasks.register('verifyPackagedChickensAssets') {
+    dependsOn tasks.named('jar')
+    doLast {
+        def jarFile = tasks.named('jar').get().archiveFile.get().asFile
+        def entityLootDir = file('src/main/resources/data/chickens/loot_table/entities')
+        def entityLootFiles = fileTree(entityLootDir).matching { include '*.json' }.files
+        if (entityLootFiles.size() != 46) {
+            throw new GradleException('Expected 46 original chicken loot tables, found '
+                    + entityLootFiles.size())
+        }
+        def blocks = ['breeder', 'roost', 'henhouse', 'henhouse_acacia',
+                      'henhouse_birch', 'henhouse_dark_oak', 'henhouse_jungle', 'henhouse_spruce']
+        def required = new LinkedHashSet<String>()
+        required.add('META-INF/neoforge.mods.toml')
+        entityLootFiles.each { loot ->
+            def species = loot.name.substring(0, loot.name.length() - '.json'.length())
+            required.add("data/chickens/loot_table/entities/${loot.name}")
+            required.add("assets/chickens/textures/entity/${species}.png")
+        }
+        blocks.each { block ->
+            required.add("data/chickens/loot_table/blocks/${block}.json")
+            required.add("assets/chickens/blockstates/${block}.json")
+        }
+        new java.util.zip.ZipFile(jarFile).withCloseable { zip ->
+            def missing = required.findAll { name -> zip.getEntry(name) == null }
+            if (!missing.isEmpty()) {
+                throw new GradleException('Missing resources inside ' + jarFile.name
+                        + ': ' + missing.join(', '))
+            }
+        }
+    }
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('verifyPackagedChickensAssets')
+}
