@@ -33,3 +33,12 @@ jobs:
 
       - name: Compile, run JUnit tests and verify packaged mod assets
         run: gradle --no-daemon clean build
+
+      # Keep a downloadable candidate JAR for review without publishing a release.
+      - name: Upload verified candidate JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: chickens-neoforge-1.21.1-candidate
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14
