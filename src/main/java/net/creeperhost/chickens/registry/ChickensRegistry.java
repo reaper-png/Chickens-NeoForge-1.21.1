@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.IntUnaryOperator;
+import java.util.function.Predicate;
 
 /**
  * The 46 Chickens 1.0.32 breeds and their original two-parent relationships.
@@ -105,17 +106,27 @@ public final class ChickensRegistry {
 
     /** Original algorithm: both parents and compatible offspring are weighted by max tier + 1 - tier. */
     public static ChickenSpecies getRandomChild(ChickenSpecies first, ChickenSpecies second, IntUnaryOperator rollBounded) {
+        return getRandomChild(first, second, rollBounded, type -> SpeciesLayConfig.isEnabled(type.id()));
+    }
+
+    /**
+     * Pure weighted breeding selection with an explicit species-availability policy.
+     * Keeps the original weighting while allowing tests without starting NeoForge.
+     */
+    public static ChickenSpecies getRandomChild(ChickenSpecies first, ChickenSpecies second,
+            IntUnaryOperator rollBounded, Predicate<ChickenSpecies> enabled) {
         Objects.requireNonNull(first);
         Objects.requireNonNull(second);
         Objects.requireNonNull(rollBounded);
+        Objects.requireNonNull(enabled);
         List<ChickenSpecies> children = new ArrayList<>();
-        if (!SpeciesLayConfig.isEnabled(first.id()) || !SpeciesLayConfig.isEnabled(second.id())) {
+        if (!enabled.test(first) || !enabled.test(second)) {
             return null;
         }
         children.add(first);
         children.add(second); // Deliberately preserve the original double weight for same-breed parents.
         for (ChickenSpecies type : TYPES.values()) {
-            if (SpeciesLayConfig.isEnabled(type.id()) && type.isChildOf(first, second)) children.add(type);
+            if (enabled.test(type) && type.isChildOf(first, second)) children.add(type);
         }
         int max = 1;
         for (ChickenSpecies type : children) max = Math.max(max, getTier(type));
