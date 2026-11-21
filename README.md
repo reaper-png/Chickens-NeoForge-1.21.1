@@ -1,83 +1,85 @@
 # Chickens — NeoForge 1.21.1
 
-Port **não oficial** do [CreeperHost Chickens](https://github.com/CreeperHost/Chickens) **1.0.32**, originalmente para Minecraft 1.18.2 / Forge, para **Minecraft 1.21.1 / NeoForge**. Este projeto mantém a identidade e as mecânicas do mod original e **não utiliza Modern Chickens**.
+An **unofficial, work-in-progress port** of [CreeperHost Chickens](https://github.com/CreeperHost/Chickens) **1.0.32** (Minecraft 1.18.2 / Forge) to **Minecraft 1.21.1 / NeoForge**. This project preserves the original mod's identity, registry IDs, and gameplay mechanics. **It does not use Modern Chickens.**
 
-> **Estado: `0.0.1-wip` — em desenvolvimento.** Há funcionalidades testadas durante o port, mas ainda não existe validação completa de servidor dedicado, multiplayer, upgrades de mundos antigos ou distribuição pública. Faça backup do mundo antes de testar.
+> **Current status: `0.0.1-wip` — not a validated public release.** Individual features have been tested during development, but comprehensive dedicated-server, multiplayer, existing-world migration, and long-running performance testing is still outstanding. **Back up your worlds before testing.**
 
-## Funcionalidades do port
+## Features
 
-- **46 espécies originais** com os mesmos IDs de registro, texturas e cruzamentos, incluindo estatísticas **Growth / Gain / Strength** e geração de recursos.
-- Galinhas capturadas como **itens 3D**, preservando espécie, atributos, idade, estado de análise e tempo restante de postura. O **Chicken Staff/Catcher** transforma a galinha em item **dropado no chão**, como no original.
-- **Spawn Eggs** específicos por espécie, **16 ovos coloridos** arremessáveis e **ovos líquidos** de água/lava (1.000 mB), com uso no mundo e em tanques compatíveis.
-- Máquinas **Roost**, **Breeder** e **seis variantes de Henhouse**: interfaces, slots, automação, salvamento dos inventários e tratamento de saída cheia.
-- Nascimento, reprodução, genética, postura, conversão em Smart Chicken e geração natural das espécies configuradas.
-- Integrações **opcionais** com **JEI** e **Jade**, sem empacotá-los no JAR do Chickens.
-- Idiomas **inglês, português brasileiro e francês**.
+- **46 original chicken species** with original registry IDs, textures, breeding pedigrees, resource drops, and **Growth / Gain / Strength** genetics.
+- **3D captured chicken items.** The **Chicken Staff (Catcher)** captures a chicken as an item dropped into the world (rather than placing it directly in inventory). The item preserves its species, genetics, age, analysis status, and remaining laying timer.
+- Species-specific **spawn eggs**, **16 throwable colored egg variants**, and water/lava **liquid eggs** containing 1,000 mB each. Liquid eggs support world placement and compatible fluid tanks.
+- **Roost**, **Breeder**, and **six Henhouse variants** with their inventories, menus, automation capabilities, saved state, and output backpressure handling.
+- Natural spawning, resource laying, weighted breeding, Smart Chicken conversion, and configurable species behavior.
+- Optional integrations for **JEI** and **Jade**, which are **not bundled** into the mod JAR.
+- Language resources for **English (US), Brazilian Portuguese, and French**.
 
-As regras de criação, tempo de postura, produtos, cruzamentos e ativação podem ser ajustadas por espécie no arquivo `config/chickens/chickens.json`, criado no primeiro carregamento. Pare o jogo/servidor e faça backup antes de editar.
+Species can be configured in `config/chickens/chickens.json`, created on first load. The configuration includes species enablement, laying rates/products, death drops, breeding parents, and natural spawn chance. Stop the game/server and make a backup before editing.
 
-## Requisitos
+## Requirements
 
-| Componente | Versão |
+| Component | Version |
 | --- | --- |
 | Minecraft | **1.21.1** |
-| NeoForge | **21.1.240** (versão de desenvolvimento configurada; requisitos do mod declarados em `neoforge.mods.toml`) |
+| NeoForge | **21.1.240** (development version in `gradle.properties`; runtime requirement is declared in the mod metadata) |
 | Java / JDK | **21** |
-| Versão do port | **0.0.1-wip** (em `gradle.properties`) |
+| Port version | **0.0.1-wip** (`gradle.properties`) |
 
-## Compilar
+## Building
 
-Use o Gradle com JDK 21 e acesso às dependências Maven. No estado atual do repositório, **o Gradle Wrapper (`gradlew`/`gradlew.bat`) não está versionado**: use uma instalação local do Gradle compatível ou o wrapper do seu ambiente de desenvolvimento, se houver.
+Use JDK 21 and a compatible Gradle installation with access to the required Maven repositories.
+
+**This repository currently does not track a Gradle Wrapper** (`gradlew` / `gradlew.bat`). For a fresh clone, use a locally installed compatible Gradle version:
 
 ```powershell
 gradle clean build
 ```
 
-Se o seu projeto local contiver o wrapper:
+If you already have a working Gradle Wrapper in your local development checkout, you may instead run:
 
 ```powershell
 .\gradlew.bat clean build
 ```
 
-O artefato é gerado em `build/libs/`. O build inclui verificações de testes JUnit, versão empacotada e presença no JAR de recursos obrigatórios (texturas, loot tables e blockstates). **Build bem-sucedido não garante compatibilidade no jogo.**
+The resulting mod JAR is placed in `build/libs/`. The build runs JUnit checks and verifies the packaged mod version and the presence of required textures, loot tables, and blockstates. **A successful build does not prove that the mod works in-game.**
 
-Para executar nos ambientes de desenvolvimento:
+For development runs:
 
 ```powershell
 gradle runClient
 gradle runServer
 ```
 
-Para instalar em um perfil de testes, copie **somente o JAR** de `build/libs/` para a pasta `mods/` de um cliente ou servidor NeoForge 1.21.1. Remova versões anteriores do mesmo port da pasta `mods/`; não instale vários JARs com o ID `chickens`.
+To test the packaged mod, copy **only the compiled JAR** from `build/libs/` into the `mods/` directory of a Minecraft 1.21.1 NeoForge client or server. Remove older builds of this port from `mods/` to avoid duplicate `chickens` mod IDs.
 
-## Organização
+## Repository structure
 
-| Caminho | Conteúdo |
+| Path | Purpose |
 | --- | --- |
-| `src/main/java/` | Implementação Java do mod |
-| `src/main/resources/` | Texturas, modelos, idiomas, receitas e tabelas de loot |
-| `src/test/java/` | Testes de regressão JUnit |
-| `docs/` | Auditorias, matrizes de validação e documentação técnica |
-| `docs/archive/` | Documentos históricos das entregas incrementais, **não** instruções atuais de instalação |
-| `legacy_species_manifest.json` | Manifesto de referência das espécies originais |
-| `LICENSE-original-MIT.txt` | Aviso de licença original preservado para conferência |
+| `src/main/java/` | Java implementation |
+| `src/main/resources/` | Textures, models, translations, recipes, loot tables, and mod metadata |
+| `src/test/java/` | JUnit regression tests |
+| `docs/` | Technical notes, audit reports, and manual validation matrices |
+| `docs/archive/` | Historical incremental patch notes — **not** current installation instructions |
+| `legacy_species_manifest.json` | Reference manifest for the original species |
+| `LICENSE-original-MIT.txt` | Preserved original license notice pending redistribution review |
 
-**Arquivos gerados** pelo Gradle (`.gradle/`, `build/`, `*.zip` e `*.jar`) não fazem parte dos fontes e não devem ser commitados.
+Generated files such as `.gradle/`, `build/`, `*.zip`, and `*.jar` should not be committed.
 
-## Testes antes de uma release
+## Release validation
 
-O checklist completo está em [docs/STAGE-51-RELEASE-CHECKLIST.md](docs/STAGE-51-RELEASE-CHECKLIST.md). As verificações mais importantes são:
+See the [release checklist](docs/STAGE-51-RELEASE-CHECKLIST.md) for the full test matrix. Before publishing a release:
 
-1. Executar `gradle clean build` com todos os testes.
-2. Iniciar **servidor dedicado** NeoForge 1.21.1, Java 21, sem JEI/Jade instalados no servidor, e conectar um cliente.
-3. Testar captura e soltura de galinhas, texturas (inclusive filhotes), genética, postura e **46 espécies**.
-4. Testar Roost, Breeder, Henhouse, saída cheia, hoppers/tubulações, salvamento e recarregamento de mundos.
-5. Verificar ovos líquidos em pilhas, transferências para tanques de outros mods e consumo em caso de falha.
-6. Testar backup de mundos antigos e avaliar MSPT/TPS com muitas entidades e máquinas.
-7. Conferir licenças e atribuição do código, das texturas e dos recursos originais **antes da publicação pública**.
+1. Run `gradle clean build` with all tests passing, and inspect the produced JAR.
+2. Boot a **dedicated NeoForge 1.21.1 server on Java 21**, without optional client-side JEI/Jade dependencies, and connect a client.
+3. Check all **46 species**, their textures, babies, capture/release behavior, genetics, breeding, and laying timers.
+4. Verify Roost, Breeder, and Henhouse inventories, hoppers/pipes, full outputs, world reloads, and save migration.
+5. Test water/lava eggs individually and in stacks, including failed transfers and tanks from other mods.
+6. Profile performance (MSPT/TPS) with large numbers of chickens and machines.
+7. Confirm licensing, original asset attribution, and redistribution permissions **before any public release**.
 
-## Créditos e licença
+## Credits and licensing
 
-Projeto original: **CreeperHost Chickens**, créditos a **CreeperHost, gigabit101 e aos autores originais**. Este é um port comunitário não afiliado aos autores do mod original.
+Original project: **CreeperHost Chickens**, with credit to **CreeperHost, gigabit101, and the original contributors**. This is a community port and is **not affiliated with or endorsed by the original authors**.
 
-O arquivo de metadados atualmente declara `MIT` e o repositório mantém `LICENSE-original-MIT.txt`. A atribuição e os termos de redistribuição de **todo** o material reutilizado ainda precisam ser confirmados antes de publicar uma versão estável.
+The NeoForge metadata currently declares `MIT`, and this repository contains `LICENSE-original-MIT.txt`. The licensing and attribution requirements for **all reused source files and assets** must still be verified before distributing a stable release.
