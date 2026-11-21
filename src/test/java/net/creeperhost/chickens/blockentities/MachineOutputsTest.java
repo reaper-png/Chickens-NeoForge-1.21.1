@@ -43,9 +43,7 @@ final class MachineOutputsTest {
                         int remaining = OutputCapacityMath.remainingAfterSlot(
                                 requested, count, slotLimit, itemMax);
                         int expected = Math.max(0, requested - capacity);
-                        assertEquals(expected, remaining,
-                                "slotLimit=" + slotLimit + ", itemMax=" + itemMax
-                                        + ", count=" + count + ", requested=" + requested);
+                        assertEquals(expected, remaining);
                         assertTrue(remaining >= 0 && remaining <= requested);
                     }
                 }
