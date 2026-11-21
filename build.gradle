@@ -81,7 +81,7 @@ tasks.named('build') {
 
 // Preserve the upstream MIT copyright notice in the distributable JAR.
 tasks.named('jar', Jar) {
-    from('LICENSE-original-MIT.txt') {
+    from('LICENSE-original-MIT.txt', 'LICENSE-roost-MIT.txt') {
         into 'META-INF'
     }
 }
@@ -104,6 +104,7 @@ tasks.register('verifyPackagedChickensAssets') {
         def required = new LinkedHashSet<String>()
         required.add('META-INF/neoforge.mods.toml')
         required.add('META-INF/LICENSE-original-MIT.txt')
+        required.add('META-INF/LICENSE-roost-MIT.txt')
         entityLootFiles.each { loot ->
             def species = loot.name.substring(0, loot.name.length() - '.json'.length())
             required.add("data/chickens/loot_table/entities/${loot.name}")
