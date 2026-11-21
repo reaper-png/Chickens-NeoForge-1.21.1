@@ -17,9 +17,12 @@ public final class ItemChickenCatcher extends Item {
     public InteractionResult interactLivingEntity(ItemStack tool, Player player, LivingEntity target, InteractionHand hand) {
         if (!(target instanceof EntityChickensChicken chicken)) return InteractionResult.PASS;
         if (player.level().isClientSide) return InteractionResult.SUCCESS;
-        ItemStack captured = ChickenItemData.create(ModItems.CHICKEN_ITEM.get(), chicken.species());
+        var species = chicken.species();
+        if (species == null) return InteractionResult.FAIL;
+        ItemStack captured = ChickenItemData.create(ModItems.CHICKEN_ITEM.get(), species);
         net.creeperhost.chickens.data.ChickenStatsCodec.write(captured, chicken.stats());
-        ChickenItemData.saveCapturedState(captured, chicken.isBaby(), chicken.getInLoveTime());
+        ChickenItemData.saveCapturedState(captured, chicken.getAge(), chicken.getInLoveTime(),
+                chicken.isAnalyzed());
         if (!player.getInventory().add(captured)) player.drop(captured, false);
         chicken.discard();
         return InteractionResult.SUCCESS;
