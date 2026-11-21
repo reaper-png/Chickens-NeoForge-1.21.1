@@ -61,16 +61,14 @@ public final class ChickenProducts {
         Item item = BuiltInRegistries.ITEM.get(resource);
         if (item == Items.AIR) return ItemStack.EMPTY;
 
-        if (parts.length == 2) {
-            // The original encoded fluid descriptor is only valid for liquid eggs.
-            if (!resource.equals(ResourceLocation.fromNamespaceAndPath("chickens", "liquid_egg"))) {
-                return ItemStack.EMPTY;
-            }
-            // Only the original WATER and LAVA eggs have a matching handler.
-            // A registered modded fluid is not enough: the egg would otherwise
-            // be produced but could never transfer its actual contents.
-            if (LiquidEggType.fromId(parts[1]).isEmpty()) return ItemStack.EMPTY;
+        boolean liquidEgg = resource.equals(ResourceLocation.fromNamespaceAndPath("chickens", "liquid_egg"));
+        // A liquid egg must always carry its original water/lava fluid ID.
+        // The bare item ID creates an unusable egg without CUSTOM_DATA.id.
+        if (liquidEgg && (parts.length != 2 || LiquidEggType.fromId(parts[1]).isEmpty())) {
+            return ItemStack.EMPTY;
         }
+        // Fluid descriptors are meaningful only for the original liquid egg.
+        if (!liquidEgg && parts.length == 2) return ItemStack.EMPTY;
 
         ItemStack result = new ItemStack(item);
         if (parts.length == 2) {
