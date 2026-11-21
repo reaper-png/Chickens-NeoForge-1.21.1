@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 
 /**
  * Reads the legacy Chickens config/chickens/chickens.json structure.
- * Supports lay_coefficient and is_enabled; other original fields are not interpreted.
+ * Supports lay_coefficient, is_enabled and lay_item; remaining legacy fields are not interpreted.
  */
 public final class SpeciesLayConfig {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -32,7 +32,8 @@ public final class SpeciesLayConfig {
         private static final Settings SETTINGS = load();
     }
 
-    private record Settings(Map<String, Float> coefficients, Map<String, Boolean> enabled) {}
+    private record Settings(Map<String, Float> coefficients, Map<String, Boolean> enabled,
+                            Map<String, String> layItems) {}
 
     private SpeciesLayConfig() {}
 
@@ -43,6 +44,15 @@ public final class SpeciesLayConfig {
 
     public static float coefficientFor(String id) {
         return Values.SETTINGS.coefficients().getOrDefault("chickens:" + id, 1.0f);
+    }
+
+    /**
+     * Configured item descriptor for resource laying; null means use the original product.
+     * The runtime item registry is validated in ChickenProducts.
+     */
+    public static String layItemFor(String id) {
+        String key = id.startsWith("chickens:") ? id : "chickens:" + id;
+        return Values.SETTINGS.layItems().get(key);
     }
 
     /** Disabled species cannot spawn naturally or be produced by breeding. */
@@ -63,6 +73,7 @@ public final class SpeciesLayConfig {
                 JsonObject settings = new JsonObject();
                 settings.addProperty("lay_coefficient", 1.0f);
                 settings.addProperty("is_enabled", true);
+                settings.addProperty("lay_item", type.product());
                 root.add(key, settings);
                 changed = true;
             } else if (root.get(key).isJsonObject()) {
@@ -75,6 +86,10 @@ public final class SpeciesLayConfig {
                     settings.addProperty("is_enabled", true);
                     changed = true;
                 }
+                if (!settings.has("lay_item")) {
+                    settings.addProperty("lay_item", type.product());
+                    changed = true;
+                }
             } else {
                 LOGGER.warn("Skipping non-object species entry {} in chickens.json", key);
             }
@@ -83,7 +98,7 @@ public final class SpeciesLayConfig {
     }
 
     private static Settings defaults() {
-        return new Settings(Map.of(), Map.of());
+        return new Settings(Map.of(), Map.of(), Map.of());
     }
 
     private static Settings load() {
@@ -119,6 +134,7 @@ public final class SpeciesLayConfig {
 
             Map<String, Float> loaded = new HashMap<>();
             Map<String, Boolean> enabled = new HashMap<>();
+            Map<String, String> layItems = new HashMap<>();
             for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
                 if (!entry.getKey().startsWith("chickens:")
                         || !entry.getValue().isJsonObject()) {
@@ -131,6 +147,19 @@ public final class SpeciesLayConfig {
                         enabled.put(entry.getKey(), active.getAsBoolean());
                     } else {
                         LOGGER.warn("Invalid is_enabled value for {}; using true", entry.getKey());
+                    }
+                }
+                if (species.has("lay_item")) {
+                    JsonElement layItem = species.get("lay_item");
+                    if (layItem.isJsonPrimitive() && layItem.getAsJsonPrimitive().isString()) {
+                        String descriptor = layItem.getAsString().trim();
+                        if (!descriptor.isEmpty()) {
+                            layItems.put(entry.getKey(), descriptor);
+                        } else {
+                            LOGGER.warn("Blank lay_item for {}; using original product", entry.getKey());
+                        }
+                    } else {
+                        LOGGER.warn("Invalid lay_item for {}; using original product", entry.getKey());
                     }
                 }
                 if (!species.has("lay_coefficient")) {
@@ -148,8 +177,10 @@ public final class SpeciesLayConfig {
                     LOGGER.warn("Invalid lay_coefficient for {}", entry.getKey(), invalidValue);
                 }
             }
-            LOGGER.info("Loaded {} Chickens lay-coefficient settings and {} enabled settings", loaded.size(), enabled.size());
-            return new Settings(Collections.unmodifiableMap(loaded), Collections.unmodifiableMap(enabled));
+            LOGGER.info("Loaded {} laying coefficients, {} enabled settings and {} product settings",
+                    loaded.size(), enabled.size(), layItems.size());
+            return new Settings(Collections.unmodifiableMap(loaded),
+                    Collections.unmodifiableMap(enabled), Collections.unmodifiableMap(layItems));
         } catch (IOException | RuntimeException error) {
             LOGGER.error("Failed to load Chickens species config {}; using defaults", configFile, error);
             return defaults();
