@@ -31,9 +31,9 @@ public class ItemChicken extends Item {
         super.appendHoverText(stack, context, tooltip, flag);
         if (ChickenItemData.type(stack) == null) return;
         ChickenStats stats = ChickenStatsCodec.read(stack);
-        tooltip.add(Component.literal("Growth: " + stats.getGrowth()).withStyle(ChatFormatting.DARK_PURPLE));
-        tooltip.add(Component.literal("Gain: " + stats.getGain()).withStyle(ChatFormatting.DARK_PURPLE));
-        tooltip.add(Component.literal("Strength: " + stats.getStrength()).withStyle(ChatFormatting.DARK_PURPLE));
+        tooltip.add(Component.translatable("entity.ChickensChicken.top.growth").append(": " + stats.getGrowth()).withStyle(ChatFormatting.DARK_PURPLE));
+        tooltip.add(Component.translatable("entity.ChickensChicken.top.gain").append(": " + stats.getGain()).withStyle(ChatFormatting.DARK_PURPLE));
+        tooltip.add(Component.translatable("entity.ChickensChicken.top.strength").append(": " + stats.getStrength()).withStyle(ChatFormatting.DARK_PURPLE));
     }
 
     @Override
