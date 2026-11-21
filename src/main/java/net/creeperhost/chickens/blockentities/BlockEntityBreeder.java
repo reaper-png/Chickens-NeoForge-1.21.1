@@ -1,6 +1,7 @@
 package net.creeperhost.chickens.blockentities;
 
 import net.creeperhost.chickens.breeding.ChickenGenetics;
+import net.creeperhost.chickens.config.SpeciesLayConfig;
 import net.creeperhost.chickens.containers.BreederMenu;
 import net.creeperhost.chickens.data.ChickenStatsCodec;
 import net.creeperhost.chickens.init.ModBlocks;
@@ -82,7 +83,9 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
         ItemStack seeds = breeder.inventory.getStackInSlot(2);
         ChickenSpecies first = ChickenItemData.type(parentA);
         ChickenSpecies second = ChickenItemData.type(parentB);
-        boolean active = first != null && second != null && seeds.is(Tags.Items.SEEDS);
+        boolean active = first != null && second != null && seeds.is(Tags.Items.SEEDS)
+                && SpeciesLayConfig.isEnabled(first.id())
+                && SpeciesLayConfig.isEnabled(second.id());
         if (state.hasProperty(net.creeperhost.chickens.block.BlockBreeder.HAS_SEEDS)) {
             boolean current = state.getValue(net.creeperhost.chickens.block.BlockBreeder.HAS_SEEDS);
             boolean breeding = state.getValue(net.creeperhost.chickens.block.BlockBreeder.IS_BREEDING);
@@ -102,6 +105,16 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
         }
         if (breeder.progress <= 1000) { breeder.setProgress(breeder.progress + 1); return; }
 
+        // A pending result may have been persisted before the player disabled
+        // that breed in chickens.json. Never produce a now-disabled species.
+        if (!breeder.pendingOffspring.isEmpty()) {
+            ChickenSpecies pendingSpecies = ChickenItemData.type(breeder.pendingOffspring);
+            if (pendingSpecies == null || !SpeciesLayConfig.isEnabled(pendingSpecies.id())) {
+                breeder.pendingOffspring = ItemStack.EMPTY;
+                breeder.setProgress(0);
+                return;
+            }
+        }
         if (breeder.pendingOffspring.isEmpty()) {
             ChickenSpecies child = ChickensRegistry.getRandomChild(first, second, level.random::nextInt);
             if (child == null) {
