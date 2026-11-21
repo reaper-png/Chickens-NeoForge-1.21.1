@@ -17,6 +17,15 @@ public final class HenhouseFuel {
         return 1 + (amount - untilFirstDirt) / ENERGY_PER_HAY;
     }
 
+    /**
+     * Largest resource batch that fits the remaining dirt output capacity.
+     * Includes items that do not yet complete the next 100-resource cycle.
+     */
+    public static int maxItemsForDirtRoom(int currentEnergy, int dirtRoom) {
+        int untilFirstDirt = currentEnergy == 0 ? ENERGY_PER_HAY : currentEnergy;
+        return untilFirstDirt - 1 + Math.max(0, dirtRoom) * ENERGY_PER_HAY;
+    }
+
     public static int energyRemaining(int currentEnergy, int amount) {
         if (amount == 0) return currentEnergy;
         int fuel = currentEnergy + hayNeeded(currentEnergy, amount) * ENERGY_PER_HAY;

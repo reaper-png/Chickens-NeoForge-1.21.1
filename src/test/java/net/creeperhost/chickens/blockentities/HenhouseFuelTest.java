@@ -26,4 +26,14 @@ class HenhouseFuelTest {
         assertEquals(2, HenhouseFuel.dirtGenerated(0, 250));
         assertEquals(3, HenhouseFuel.dirtGenerated(90, 300));
     }
+
+    @Test void dirtCapacityBoundMatchesOriginalDirtGeneration() {
+        for (int energy = 0; energy <= 100; energy++) {
+            for (int room = 0; room <= 64; room++) {
+                int bound = HenhouseFuel.maxItemsForDirtRoom(energy, room);
+                assertEquals(true, HenhouseFuel.dirtGenerated(energy, bound) <= room);
+                assertEquals(true, HenhouseFuel.dirtGenerated(energy, bound + 1) > room);
+            }
+        }
+    }
 }

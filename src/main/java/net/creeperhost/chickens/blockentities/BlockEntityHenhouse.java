@@ -103,10 +103,10 @@ public final class BlockEntityHenhouse extends BlockEntity implements MenuProvid
         ItemStack dirt = inventory.getStackInSlot(1);
         int fuelAvailable = energy + (hay.is(Items.HAY_BLOCK) ? hay.getCount() * HenhouseFuel.ENERGY_PER_HAY : 0);
         int dirtRoom = dirt.isEmpty() ? 64 : dirt.is(Items.DIRT) ? dirt.getMaxStackSize() - dirt.getCount() : 0;
-        int upperBound = Math.min(incoming.getCount(), fuelAvailable);
+        int upperBound = Math.min(Math.min(incoming.getCount(), fuelAvailable),
+                HenhouseFuel.maxItemsForDirtRoom(energy, dirtRoom));
         int accepted = 0;
         for (int amount = upperBound; amount > 0; amount--) {
-            if (HenhouseFuel.dirtGenerated(energy, amount) > dirtRoom) continue;
             if (MachineOutputs.canInsert(inventory, 2, incoming.copyWithCount(amount))) {
                 accepted = amount;
                 break;
