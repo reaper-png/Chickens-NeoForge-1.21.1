@@ -27,6 +27,11 @@ public final class ModCreativeTabs {
                         for (ChickenSpecies type : ChickensRegistry.getItems()) {
                             output.accept(ChickenItemData.create(ModItems.CHICKEN_ITEM.get(), type));
                         }
+                        // Original ItemSpawnEgg exposed one spawn egg per breed.
+                        // Keep registry IDs and type metadata identical.
+                        for (ChickenSpecies type : ChickensRegistry.getItems()) {
+                            output.accept(ChickenItemData.create(ModItems.SPAWN_EGG.get(), type));
+                        }
                         // Liquid eggs remain distinct from chicken entities and must be
                         // discoverable as usable items, as in the original mod.
                         output.accept(ItemLiquidEgg.of(LiquidEggType.WATER));
