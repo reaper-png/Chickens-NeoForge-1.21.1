@@ -1,6 +1,9 @@
 {
   "itemGroup.chickens": "Chickens",
   "item.chickens.chicken_item": "Galinha",
+  "entity.ChickensChicken.top.growth": "Crescimento",
+  "entity.ChickensChicken.top.gain": "Ganho",
+  "entity.ChickensChicken.top.strength": "Força",
   "item.chickens.spawn_egg": "Ovo de invocação de galinha",
   "item.chickens.colored_egg": "Ovo de galinha colorida",
   "item.chickens.liquid_egg": "Ovo líquido",
