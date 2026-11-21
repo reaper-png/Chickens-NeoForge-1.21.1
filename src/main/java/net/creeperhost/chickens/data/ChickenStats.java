@@ -21,7 +21,7 @@ public final class ChickenStats {
     public int getGrowth() { return growth; }
     public int getStrength() { return strength; }
 
-    public void setGain(int gain) { this.gain = Math.min(10, gain); }
-    public void setGrowth(int growth) { this.growth = Math.min(10, growth); }
-    public void setStrength(int strength) { this.strength = Math.min(10, strength); }
+    public void setGain(int gain) { this.gain = Math.clamp(gain, 1, 10); }
+    public void setGrowth(int growth) { this.growth = Math.clamp(growth, 1, 10); }
+    public void setStrength(int strength) { this.strength = Math.clamp(strength, 1, 10); }
 }
