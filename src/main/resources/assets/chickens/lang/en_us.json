@@ -98,7 +98,7 @@
   "gui.throws": "Color Egg Throwing",
   "gui.henhousing": "Henhouse Byproduct",
   "container.henhouse": "Henhouse",
-  "block.chickens.henhouse.tooltip": "It will automatically collect items from chickens in 9x9x9 radius when provided with hay bale.",
+  "block.chickens.henhouse.tooltip": "It will automatically collect items from chickens in 11x11x11 radius when provided with hay bale.",
   "block.chickens.henhouse": "Henhouse",
   "block.chickens.henhouse_acacia": "Acacia Henhouse",
   "block.chickens.henhouse_birch": "Birch Henhouse",
