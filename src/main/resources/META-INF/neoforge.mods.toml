@@ -6,7 +6,7 @@ modId="chickens"
 version="${mod_version}"
 displayName="Chickens"
 authors="CreeperHost, gigabit101 (original), community port in progress"
-description="Direct port of original CreeperHost Chickens 1.0.32. Work in progress: not feature complete."
+description="Unofficial NeoForge 1.21.1 port of original CreeperHost Chickens 1.0.32. Pre-release build."
 [[dependencies.chickens]]
 modId="minecraft"
 type="required"
