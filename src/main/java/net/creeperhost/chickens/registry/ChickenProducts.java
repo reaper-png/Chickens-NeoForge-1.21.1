@@ -35,6 +35,22 @@ public final class ChickenProducts {
         return fromDescriptor(species.product());
     }
 
+    /**
+     * Extra death drop is independent from the laying product.
+     * Missing or blank configuration never changes vanilla loot.
+     */
+    public static ItemStack deathDrop(ChickenSpecies species) {
+        if (species == null) return ItemStack.EMPTY;
+        String configured = SpeciesLayConfig.dropItemFor(species.id());
+        if (configured == null || configured.isBlank()) return ItemStack.EMPTY;
+        ItemStack result = fromDescriptor(configured);
+        if (result.isEmpty() && INVALID_WARNED.add("drop:" + species.id() + "=" + configured)) {
+            LOGGER.warn("Invalid drop_item '{}' for chickens:{}; ignoring death-drop override",
+                    configured, species.id());
+        }
+        return result;
+    }
+
     private static ItemStack fromDescriptor(String descriptor) {
         if (descriptor == null || descriptor.isBlank()) return ItemStack.EMPTY;
         String[] parts = descriptor.split("\\|", -1);
