@@ -48,6 +48,11 @@ public final class RoostBlockEntityRenderer implements BlockEntityRenderer<Block
             if (chicken == null) return;
             previews.put(species.id(), chicken);
         }
+        // A captured juvenile still occupies an item slot, but its preview
+        // should have the correct baby proportions. No ticking is involved.
+        Integer capturedAge = ChickenItemData.capturedAgeTicks(stack);
+        boolean baby = capturedAge != null ? capturedAge < 0 : ChickenItemData.wasBaby(stack);
+        if (chicken.isBaby() != baby) chicken.setBaby(baby);
         // Static preview: the Roost holds an item, not a ticking world entity.
         // Freeze current/previous animation values so interpolation cannot
         // make the model flutter or jitter between rendered frames.
