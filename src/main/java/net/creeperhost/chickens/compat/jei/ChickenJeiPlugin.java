@@ -88,8 +88,11 @@ public final class ChickenJeiPlugin implements IModPlugin {
             ItemStack product = ChickenProducts.produce(species);
             if (!product.isEmpty()) {
                 laying.add(new ChickenJeiRecipe(chicken, ItemStack.EMPTY, product));
-                // Legacy drops category uses createDropItem(), the same registry product.
-                drops.add(new ChickenJeiRecipe(chicken.copy(), ItemStack.EMPTY, product.copy()));
+
+            }
+            ItemStack deathDrop = ChickenProducts.deathDrop(species);
+            if (!deathDrop.isEmpty()) {
+                drops.add(new ChickenJeiRecipe(chicken.copy(), ItemStack.EMPTY, deathDrop));
             }
             if (species.hasParents()) {
                 ChickenSpecies a = ChickensRegistry.getByRegistryName(species.parentA());
