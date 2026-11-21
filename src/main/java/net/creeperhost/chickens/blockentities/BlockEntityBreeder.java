@@ -109,7 +109,14 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
         // that breed in chickens.json. Never produce a now-disabled species.
         if (!breeder.pendingOffspring.isEmpty()) {
             ChickenSpecies pendingSpecies = ChickenItemData.type(breeder.pendingOffspring);
-            if (pendingSpecies == null || !SpeciesLayConfig.isEnabled(pendingSpecies.id())) {
+            // The configured pedigree may have changed between world saves.
+            // The original weighted pool includes both parents (even when
+            // identical) and only children of the effective parent pair.
+            boolean stillPossible = pendingSpecies != null
+                    && (pendingSpecies.id().equals(first.id())
+                        || pendingSpecies.id().equals(second.id())
+                        || ChickensRegistry.isChildOf(pendingSpecies, first, second));
+            if (!stillPossible || !SpeciesLayConfig.isEnabled(pendingSpecies.id())) {
                 breeder.pendingOffspring = ItemStack.EMPTY;
                 breeder.setProgress(0);
                 return;
