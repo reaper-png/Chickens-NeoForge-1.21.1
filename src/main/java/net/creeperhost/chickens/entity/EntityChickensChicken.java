@@ -81,13 +81,21 @@ public class EntityChickensChicken extends Chicken {
     public void setAnalyzed(boolean value) { entityData.set(ANALYZED, value); }
     public int getLayProgress() { return entityData.get(LAY_PROGRESS); }
 
+    /** Avoid redundant data writes during the many ticks in the same progress band. */
+    private void syncLayProgress() {
+        int remainingBand = LayProgressMath.remainingBand(layTicks);
+        if (LayProgressMath.needsSync(entityData.get(LAY_PROGRESS), remainingBand)) {
+            entityData.set(LAY_PROGRESS, remainingBand);
+        }
+    }
+
     /** Exact number of ticks remaining until the next resource-laying cycle. */
     public int getLayTicks() { return layTicks; }
 
     /** Restores a captured chicken's existing laying cycle without rerolling it. */
     public void restoreLayTicks(int remainingTicks) {
         layTicks = Math.max(1, remainingTicks);
-        entityData.set(LAY_PROGRESS, layTicks / 2400);
+        syncLayProgress();
     }
 
     @Override
@@ -97,7 +105,7 @@ public class EntityChickensChicken extends Chicken {
         ChickenSpecies breed = species();
         if (breed == null) return;
         if (--layTicks > 0) {
-            entityData.set(LAY_PROGRESS, layTicks / 2400);
+            syncLayProgress();
             return;
         }
         ItemStack laid = ChickenProducts.produce(breed);
@@ -116,7 +124,7 @@ public class EntityChickensChicken extends Chicken {
         int base = min + random.nextInt(min);
         int growth = entityData.get(GROWTH);
         layTicks = (int) Math.max(1, base * (11.0 - growth) / 10.0) * 2;
-        entityData.set(LAY_PROGRESS, layTicks / 2400);
+        syncLayProgress();
     }
 
     @Override
@@ -157,6 +165,7 @@ public class EntityChickensChicken extends Chicken {
         applyStats(new ChickenStats(tag.contains("Gain") ? tag.getInt("Gain") : 1,
                 tag.contains("Growth") ? tag.getInt("Growth") : 1,
                 tag.contains("Strength") ? tag.getInt("Strength") : 1));
-        layTicks = tag.contains("EggLayTime") ? Math.max(1,tag.getInt("EggLayTime")) : 6000;
+        layTicks = tag.contains("EggLayTime") ? Math.max(1, tag.getInt("EggLayTime")) : 6000;
+        syncLayProgress();
     }
 }
