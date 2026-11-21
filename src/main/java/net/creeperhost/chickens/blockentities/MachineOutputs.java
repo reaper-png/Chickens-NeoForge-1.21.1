@@ -9,8 +9,30 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 public final class MachineOutputs {
     private MachineOutputs() {}
 
+    /**
+     * Capacity-only check: avoid cloning and planning all output stacks on
+     * every machine tick. The actual insertion still uses the atomic plan.
+     */
     public static boolean canInsert(ItemStackHandler inventory, int first, ItemStack produced) {
-        return plan(inventory, first, produced) != null;
+        if (produced.isEmpty() || first < 0 || first >= inventory.getSlots()) return false;
+        int remaining = produced.getCount();
+        int maxStack = produced.getMaxStackSize();
+        // Existing compatible stacks count first, as in plan().
+        for (int slot = first; slot < inventory.getSlots(); slot++) {
+            ItemStack existing = inventory.getStackInSlot(slot);
+            if (existing.isEmpty() || !ItemStack.isSameItemSameComponents(existing, produced)) continue;
+            int capacity = Math.min(inventory.getSlotLimit(slot), maxStack) - existing.getCount();
+            if (capacity > 0) remaining -= Math.min(remaining, capacity);
+            if (remaining == 0) return true;
+        }
+        // Empty output slots can hold the remainder.
+        for (int slot = first; slot < inventory.getSlots(); slot++) {
+            if (!inventory.getStackInSlot(slot).isEmpty()) continue;
+            int capacity = Math.min(inventory.getSlotLimit(slot), maxStack);
+            if (capacity > 0) remaining -= Math.min(remaining, capacity);
+            if (remaining == 0) return true;
+        }
+        return false;
     }
 
     public static boolean insert(ItemStackHandler inventory, int first, ItemStack produced) {
