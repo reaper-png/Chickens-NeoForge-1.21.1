@@ -1,6 +1,7 @@
 package net.creeperhost.chickens.registry;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +27,7 @@ final class MachineAssetCoverageTest {
         try (InputStream resource = MachineAssetCoverageTest.class.getClassLoader()
                 .getResourceAsStream(path)) {
             assertNotNull(resource, "Missing asset: " + path);
-            assertNotNull(resource.readNBytes(1), "Unreadable asset: " + path);
+            assertEquals(1, resource.readNBytes(1).length, "Empty asset: " + path);
         }
     }
 }
