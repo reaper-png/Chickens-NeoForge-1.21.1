@@ -37,8 +37,8 @@ public final class EntityColoredEgg extends ThrowableItemProjectile {
         super.onHit(hit);
         if (!level().isClientSide) {
             ChickenSpecies species = ChickensRegistry.getByRegistryName(entityData.get(CHICKEN_TYPE));
-            if (species != null && random.nextInt(8) == 0) {
-                int count = random.nextInt(32) == 0 ? 4 : 1;
+            if (species != null) {
+                int count = ColoredEggHatching.hatchCount(random::nextInt);
                 for (int i = 0; i < count; i++) {
                     EntityChickensChicken chicken = ModEntities.create(species, level());
                     if (chicken != null) {
