@@ -19,7 +19,7 @@ class SpeciesConfigWriteTest {
     @Test
     void createsMissingConfigAndCleansTemporaryFile() throws IOException {
         Path target = directory.resolve("chickens.json");
-        SpeciesLayConfig.writeConfigSafely(target, "{\"new\":true}\n");
+        ConfigFileWriter.writeSafely(target, "{\"new\":true}\n");
 
         assertEquals("{\"new\":true}\n", Files.readString(target, StandardCharsets.UTF_8));
         assertNoTemporaryFiles();
@@ -30,7 +30,7 @@ class SpeciesConfigWriteTest {
         Path target = directory.resolve("chickens.json");
         Files.writeString(target, "{\"old\":true}\n", StandardCharsets.UTF_8);
 
-        SpeciesLayConfig.writeConfigSafely(target, "{\"old\":true,\"added\":1}\n");
+        ConfigFileWriter.writeSafely(target, "{\"old\":true,\"added\":1}\n");
 
         assertEquals("{\"old\":true,\"added\":1}\n", Files.readString(target, StandardCharsets.UTF_8));
         assertNoTemporaryFiles();
@@ -44,7 +44,7 @@ class SpeciesConfigWriteTest {
         Files.writeString(sentinel, "original", StandardCharsets.UTF_8);
 
         org.junit.jupiter.api.Assertions.assertThrows(IOException.class,
-                () -> SpeciesLayConfig.writeConfigSafely(target, "{\"test\":1}\n"));
+                () -> ConfigFileWriter.writeSafely(target, "{\"test\":1}\n"));
 
         assertTrue(Files.isDirectory(target));
         assertEquals("original", Files.readString(sentinel, StandardCharsets.UTF_8));
