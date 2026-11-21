@@ -15,9 +15,9 @@ public final class ChickenStatsCodec {
     public static ChickenStats read(ItemStack stack) {
         CustomData component = stack.get(DataComponents.CUSTOM_DATA);
         if (component == null) {
-            ChickenStats defaults = new ChickenStats();
-            write(stack, defaults); // retain legacy initialisation semantics
-            return defaults;
+            // Reading stats must never modify an item stack. Fresh/corrupt
+            // legacy items still behave as 1/1/1 without writing new NBT.
+            return new ChickenStats();
         }
         CompoundTag tag = component.copyTag();
         return new ChickenStats(
