@@ -17,10 +17,11 @@ public final class ChickenGenetics {
         if (first.id().equals(second.id()) && child.id().equals(first.id())) {
             int s = a.getStrength();
             int t = b.getStrength();
-            return new ChickenStats(
-                    mutated(a.getGain(), b.getGain(), s, t, randomBounded),
-                    mutated(a.getGrowth(), b.getGrowth(), s, t, randomBounded),
-                    mutated(s, t, s, t, randomBounded));
+            // Original 1.0.32 rolls Growth first, Gain second, Strength last.
+            int growth = mutated(a.getGrowth(), b.getGrowth(), s, t, randomBounded);
+            int gain = mutated(a.getGain(), b.getGain(), s, t, randomBounded);
+            int strength = mutated(s, t, s, t, randomBounded);
+            return new ChickenStats(gain, growth, strength);
         }
         if (child.id().equals(first.id())) return new ChickenStats(a.getGain(), a.getGrowth(), a.getStrength());
         if (child.id().equals(second.id())) return new ChickenStats(b.getGain(), b.getGrowth(), b.getStrength());
