@@ -29,7 +29,10 @@ public final class LiquidEggItemHandler implements IFluidHandlerItem {
     @Override public int fill(FluidStack resource, FluidAction action) { return 0; }
 
     @Override public FluidStack getFluidInTank(int tank) {
-        if (tank != 0 || container.isEmpty()) return FluidStack.EMPTY;
+        // NeoForge's IFluidHandlerItem contract requires a single container.
+        // Never advertise/drain a stack of eggs as one bucket: bulk handlers
+        // must first split off a one-item stack.
+        if (tank != 0 || container.getCount() != 1) return FluidStack.EMPTY;
         Fluid fluid = fluid(container);
         return fluid == Fluids.EMPTY ? FluidStack.EMPTY : new FluidStack(fluid, BUCKET_VOLUME);
     }
