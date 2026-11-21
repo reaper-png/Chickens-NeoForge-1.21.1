@@ -2,6 +2,7 @@ package net.creeperhost.chickens.init;
 
 import net.creeperhost.chickens.ChickensMod;
 import net.creeperhost.chickens.item.ItemChicken;
+import net.creeperhost.chickens.item.ItemSpawnEgg;
 import net.creeperhost.chickens.item.ItemColoredEgg;
 import net.creeperhost.chickens.item.ItemChickenCatcher;
 import net.creeperhost.chickens.item.ItemLiquidEgg;
@@ -14,7 +15,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /** Preserves the original six item IDs and eight block-item IDs. */
 public final class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ChickensMod.MODID);
-    public static final DeferredItem<Item> SPAWN_EGG = ITEMS.register("spawn_egg", () -> new ItemChicken(new Item.Properties()));
+    public static final DeferredItem<Item> SPAWN_EGG = ITEMS.register("spawn_egg", () -> new ItemSpawnEgg(new Item.Properties()));
     public static final DeferredItem<Item> COLOURED_EGG = ITEMS.register("colored_egg", () -> new ItemColoredEgg(new Item.Properties()));
     public static final DeferredItem<Item> LIQUID_EGG = ITEMS.register("liquid_egg", () -> new ItemLiquidEgg(new Item.Properties()));
     public static final DeferredItem<Item> ANALYZER = ITEMS.register("analyzer", () -> new ItemAnalyzer(new Item.Properties().stacksTo(1)));
