@@ -55,6 +55,8 @@ public class ItemChicken extends Item {
             chicken.setBaby(ChickenItemData.wasBaby(stack)); // Legacy captured items.
         }
         chicken.setAnalyzed(ChickenItemData.wasAnalyzed(stack));
+        Integer remainingLayTicks = ChickenItemData.capturedLayTicks(stack);
+        if (remainingLayTicks != null) chicken.restoreLayTicks(remainingLayTicks);
         if (ChickenItemData.loveTicks(stack) > 0) chicken.setInLoveTime(ChickenItemData.loveTicks(stack));
         chicken.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, context.getRotation(), 0);
         if (!context.getLevel().addFreshEntity(chicken)) return InteractionResult.FAIL;
