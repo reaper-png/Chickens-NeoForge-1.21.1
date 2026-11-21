@@ -81,6 +81,15 @@ public class EntityChickensChicken extends Chicken {
     public void setAnalyzed(boolean value) { entityData.set(ANALYZED, value); }
     public int getLayProgress() { return entityData.get(LAY_PROGRESS); }
 
+    /** Exact number of ticks remaining until the next resource-laying cycle. */
+    public int getLayTicks() { return layTicks; }
+
+    /** Restores a captured chicken's existing laying cycle without rerolling it. */
+    public void restoreLayTicks(int remainingTicks) {
+        layTicks = Math.max(1, remainingTicks);
+        entityData.set(LAY_PROGRESS, layTicks / 2400);
+    }
+
     @Override
     public void aiStep() {
         super.aiStep();
