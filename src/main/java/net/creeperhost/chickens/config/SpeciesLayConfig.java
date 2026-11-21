@@ -8,7 +8,9 @@ import com.mojang.logging.LogUtils;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
@@ -144,6 +146,27 @@ public final class SpeciesLayConfig {
         return new Settings(Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
     }
 
+    /**
+     * Stage the complete JSON beside the target before replacing it.
+     * A failed serialization or write must not truncate an existing config.
+     */
+    private static void writeConfigSafely(Path configFile, String contents) throws IOException {
+        Path directory = configFile.getParent();
+        Files.createDirectories(directory);
+        Path temporary = Files.createTempFile(directory, "chickens-", ".json.tmp");
+        try {
+            Files.writeString(temporary, contents, StandardCharsets.UTF_8);
+            try {
+                Files.move(temporary, configFile,
+                        StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            } catch (AtomicMoveNotSupportedException unsupported) {
+                Files.move(temporary, configFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } finally {
+            Files.deleteIfExists(temporary);
+        }
+    }
+
     private static Settings load() {
         Path configFile = FMLPaths.CONFIGDIR.get()
                 .resolve("chickens").resolve("chickens.json");
@@ -168,10 +191,8 @@ public final class SpeciesLayConfig {
 
             boolean changed = addMissingSpecies(root);
             if (changed || Files.notExists(configFile)) {
-                Files.createDirectories(configFile.getParent());
-                Files.writeString(configFile,
-                        new GsonBuilder().setPrettyPrinting().create().toJson(root) + "\n",
-                        StandardCharsets.UTF_8);
+                writeConfigSafely(configFile,
+                        new GsonBuilder().setPrettyPrinting().create().toJson(root) + "\n");
                 LOGGER.info("Updated Chickens species template: {}", configFile);
             }
 
