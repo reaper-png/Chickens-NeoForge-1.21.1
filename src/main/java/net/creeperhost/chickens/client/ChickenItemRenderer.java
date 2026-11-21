@@ -118,5 +118,6 @@ public final class ChickenItemRenderer extends BlockEntityWithoutLevelRenderer {
     public void onResourceManagerReload(ResourceManager manager) {
         super.onResourceManagerReload(manager);
         model = null; // Re-bake after resource-pack changes.
+        previews.clear(); // Cached visual entities must also be refreshed.
     }
 }
