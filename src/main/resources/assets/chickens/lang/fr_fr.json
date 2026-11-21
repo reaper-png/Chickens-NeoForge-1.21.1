@@ -105,7 +105,7 @@
   "gui.henhousing":"Sous-produit de poulailler",
 
   "container.henhouse":"Poulailler",
-  "block.chickens.henhouse.tooltip":"Il collecte automatiquement les articles des poulets dans un rayon de 9x9x9 lorsqu'on lui fournit une balle de foin.",
+  "block.chickens.henhouse.tooltip":"Il collecte automatiquement les articles des poulets dans un rayon de 11x11x11 lorsqu'on lui fournit une balle de foin.",
   "block.chickens.henhouse":"Poulailler",
   "block.chickens.henhouse_acacia":"Poulailler d'Acacia",
   "block.chickens.henhouse_birch":"Poulailler du bouleau",
