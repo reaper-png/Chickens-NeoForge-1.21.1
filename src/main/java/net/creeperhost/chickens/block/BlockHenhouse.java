@@ -42,7 +42,9 @@ public final class BlockHenhouse extends LegacyFacingBlock implements EntityBloc
             for (int slot = 0; slot < henhouse.inventory().getSlots(); slot++) {
                 ItemStack stack = henhouse.inventory().getStackInSlot(slot);
                 if (!stack.isEmpty()) {
-                    Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack.copy());
+                    ItemStack dropped = stack.copy();
+                    henhouse.inventory().setStackInSlot(slot, ItemStack.EMPTY);
+                    Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), dropped);
                 }
             }
         }
