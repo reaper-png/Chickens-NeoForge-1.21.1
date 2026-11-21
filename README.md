@@ -2,7 +2,7 @@
 
 An **unofficial, work-in-progress port** of [CreeperHost Chickens](https://github.com/CreeperHost/Chickens) **1.0.32** (Minecraft 1.18.2 / Forge) to **Minecraft 1.21.1 / NeoForge**. This project preserves the original mod's identity, registry IDs, and gameplay mechanics. **It does not use Modern Chickens.**
 
-> **Current status: `0.0.1-wip` — not a validated public release.** Individual features have been tested during development, but comprehensive dedicated-server, multiplayer, existing-world migration, and long-running performance testing is still outstanding. **Back up your worlds before testing.**
+> **Current status: `0.1.0-rc.1` — release candidate, not a stable/public release.** The maintainer has continuously tested PR builds on a server during development; independent performance and provenance checks are not fully documented. **Back up your worlds before testing.**
 
 ## Features
 
@@ -23,7 +23,7 @@ Species can be configured in `config/chickens/chickens.json`, created on first l
 | Minecraft | **1.21.1** |
 | NeoForge | **21.1.240** (development version in `gradle.properties`; runtime requirement is declared in the mod metadata) |
 | Java / JDK | **21** |
-| Port version | **0.0.1-wip** (`gradle.properties`) |
+| Port version | **0.1.0-rc.1** (`gradle.properties`) |
 
 ## Building
 
@@ -41,7 +41,7 @@ If you already have a working Gradle Wrapper in your local development checkout,
 .\gradlew.bat clean build
 ```
 
-The resulting mod JAR is placed in `build/libs/`. The build runs JUnit checks and verifies the packaged mod version and the presence of required textures, loot tables, and blockstates. **A successful build does not prove that the mod works in-game.**
+The resulting mod JAR is placed in `build/libs/`. The build runs JUnit checks and verifies the packaged mod version, original MIT notice and required textures, loot tables, and blockstates. **A successful build does not prove that the mod works in-game.**
 
 For development runs:
 
@@ -65,6 +65,10 @@ To test the packaged mod, copy **only the compiled JAR** from `build/libs/` into
 | `LICENSE-original-MIT.txt` | Preserved original license notice pending redistribution review |
 
 Generated files such as `.gradle/`, `build/`, `*.zip`, and `*.jar` should not be committed.
+
+## Release candidate
+
+See [the changelog](CHANGELOG.md) and [candidate procedure](docs/RELEASE-CANDIDATE.md). Successful GitHub Actions builds attach a temporary candidate JAR for review; **this does not automatically publish a release**.
 
 ## Release validation
 
