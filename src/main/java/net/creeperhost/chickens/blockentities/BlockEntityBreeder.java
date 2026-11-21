@@ -70,7 +70,10 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
             }
         }
         if (!active) {
-            breeder.pendingOffspring = ItemStack.EMPTY;
+            if (!breeder.pendingOffspring.isEmpty()) {
+                breeder.pendingOffspring = ItemStack.EMPTY;
+                breeder.setChanged();
+            }
             breeder.setProgress(0);
             return;
         }
