@@ -1,6 +1,7 @@
 package net.creeperhost.chickens.registry;
 
 import net.creeperhost.chickens.config.SpeciesLayConfig;
+import net.creeperhost.chickens.item.LiquidEggType;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.component.DataComponents;
@@ -65,8 +66,10 @@ public final class ChickenProducts {
             if (!resource.equals(ResourceLocation.fromNamespaceAndPath("chickens", "liquid_egg"))) {
                 return ItemStack.EMPTY;
             }
-            ResourceLocation fluid = ResourceLocation.tryParse(parts[1]);
-            if (fluid == null || !BuiltInRegistries.FLUID.containsKey(fluid)) return ItemStack.EMPTY;
+            // Only the original WATER and LAVA eggs have a matching handler.
+            // A registered modded fluid is not enough: the egg would otherwise
+            // be produced but could never transfer its actual contents.
+            if (LiquidEggType.fromId(parts[1]).isEmpty()) return ItemStack.EMPTY;
         }
 
         ItemStack result = new ItemStack(item);
