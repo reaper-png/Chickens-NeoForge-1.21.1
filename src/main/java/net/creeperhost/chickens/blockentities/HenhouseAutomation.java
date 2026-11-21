@@ -8,7 +8,7 @@ public final class HenhouseAutomation implements IItemHandler {
     private final HenhouseInventory inventory;
     public HenhouseAutomation(HenhouseInventory inventory) { this.inventory = inventory; }
     @Override public int getSlots() { return inventory.getSlots(); }
-    @Override public ItemStack getStackInSlot(int slot) { return inventory.getStackInSlot(slot); }
+    @Override public ItemStack getStackInSlot(int slot) { return inventory.getStackInSlot(slot).copy(); }
     @Override public int getSlotLimit(int slot) { return inventory.getSlotLimit(slot); }
     @Override public boolean isItemValid(int slot, ItemStack stack) { return inventory.isItemValid(slot, stack); }
     @Override public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
