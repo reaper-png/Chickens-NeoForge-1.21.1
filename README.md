@@ -1,8 +1,8 @@
 # Chickens — NeoForge 1.21.1
 
-An **unofficial, work-in-progress port** of [CreeperHost Chickens](https://github.com/CreeperHost/Chickens) **1.0.32** (Minecraft 1.18.2 / Forge) to **Minecraft 1.21.1 / NeoForge**. This project preserves the original mod's identity, registry IDs, and gameplay mechanics. **It does not use Modern Chickens.**
+An **unofficial community port** of [CreeperHost Chickens](https://github.com/CreeperHost/Chickens) **1.0.32** (Minecraft 1.18.2 / Forge) to **Minecraft 1.21.1 / NeoForge**. This project preserves the original mod's identity, registry IDs, and gameplay mechanics. **It does not use Modern Chickens.**
 
-> **Current status: `0.1.0-rc.1` — release candidate, not a stable/public release.** The maintainer has continuously tested PR builds on a server during development; independent performance and provenance checks are not fully documented. **Back up your worlds before testing.**
+> **Latest published version: [v0.1.0-rc.1](https://github.com/reaper-png/Chickens-NeoForge-1.21.1/releases/tag/v0.1.0-rc.1)** — public **pre-release**, not a stable version. The maintainer has tested builds on a server throughout development. Back up existing worlds before updating.
 
 ## Features
 
@@ -15,6 +15,17 @@ An **unofficial, work-in-progress port** of [CreeperHost Chickens](https://githu
 - Language resources for **English (US), Brazilian Portuguese, and French**.
 
 Species can be configured in `config/chickens/chickens.json`, created on first load. The configuration includes species enablement, laying rates/products, death drops, breeding parents, and natural spawn chance. Stop the game/server and make a backup before editing.
+
+## Download and installation
+
+**[Download Chickens 0.1.0-rc.1 (.jar)](https://github.com/reaper-png/Chickens-NeoForge-1.21.1/releases/download/v0.1.0-rc.1/chickens-0.1.0-rc.1.jar)** · [Release notes](https://github.com/reaper-png/Chickens-NeoForge-1.21.1/releases/tag/v0.1.0-rc.1)
+
+1. Install **Minecraft 1.21.1** with **NeoForge 21.1+** and Java 21.
+2. Download the JAR above and place it in your client or dedicated server `mods/` folder.
+3. Remove any earlier version of this port to prevent duplicate `chickens` mod IDs.
+4. Start Minecraft or the server. JEI and Jade are optional, not required.
+
+**Note:** Install the `.jar` directly, not the GitHub Actions artifact ZIP. Back up existing worlds and configurations before upgrading.
 
 ## Requirements
 
@@ -41,7 +52,7 @@ If you already have a working Gradle Wrapper in your local development checkout,
 .\gradlew.bat clean build
 ```
 
-The resulting mod JAR is placed in `build/libs/`. The build runs JUnit checks and verifies the packaged mod version, original MIT notice and required textures, loot tables, and blockstates. **A successful build does not prove that the mod works in-game.**
+The resulting mod JAR is placed in `build/libs/`. The build runs JUnit checks and verifies the packaged mod version, both upstream MIT notices, and required textures, loot tables, and blockstates. **A successful build does not prove that the mod works in-game.**
 
 For development runs:
 
@@ -62,17 +73,21 @@ To test the packaged mod, copy **only the compiled JAR** from `build/libs/` into
 | `docs/` | Technical notes, audit reports, and manual validation matrices |
 | `docs/archive/` | Historical incremental patch notes — **not** current installation instructions |
 | `legacy_species_manifest.json` | Reference manifest for the original species |
-| `LICENSE-original-MIT.txt` | Preserved original license notice pending redistribution review |
+| `LICENSE-original-MIT.txt` | Preserved Chickens upstream MIT license notice |
+| `LICENSE-roost-MIT.txt` | Preserved Roost upstream MIT license notice |
+| `docs/THIRD-PARTY-NOTICES.md` | License attribution and asset provenance review |
 
 Generated files such as `.gradle/`, `build/`, `*.zip`, and `*.jar` should not be committed.
 
-## Release candidate
+## Release status
 
-See [the changelog](CHANGELOG.md) and [candidate procedure](docs/RELEASE-CANDIDATE.md). Successful GitHub Actions builds attach a temporary candidate JAR for review; **this does not automatically publish a release**.
+**v0.1.0-rc.1 has been published as a GitHub pre-release**, with its compiled JAR attached. See the [changelog](CHANGELOG.md) and [release page](https://github.com/reaper-png/Chickens-NeoForge-1.21.1/releases/tag/v0.1.0-rc.1).
 
-## Release validation
+The [release-candidate procedure](docs/RELEASE-CANDIDATE.md) documents verification steps for future candidate builds. CI artifacts are temporary and are **not** substitutes for the published release file.
 
-See the [release checklist](docs/STAGE-51-RELEASE-CHECKLIST.md) for the full test matrix. Before publishing a release:
+## Validation and future stable release
+
+The maintainer has performed server testing during development, and GitHub Actions verifies compilation, JUnit tests, version metadata and packaged assets. A successful build does not certify every multiplayer, mod-interoperability or long-running performance scenario. See the [release checklist](docs/STAGE-51-RELEASE-CHECKLIST.md) for further validation before declaring a **stable** version:
 
 1. Run `gradle clean build` with all tests passing, and inspect the produced JAR.
 2. Boot a **dedicated NeoForge 1.21.1 server on Java 21**, without optional client-side JEI/Jade dependencies, and connect a client.
@@ -80,10 +95,10 @@ See the [release checklist](docs/STAGE-51-RELEASE-CHECKLIST.md) for the full tes
 4. Verify Roost, Breeder, and Henhouse inventories, hoppers/pipes, full outputs, world reloads, and save migration.
 5. Test water/lava eggs individually and in stacks, including failed transfers and tanks from other mods.
 6. Profile performance (MSPT/TPS) with large numbers of chickens and machines.
-7. Confirm licensing, original asset attribution, and redistribution permissions **before any public release**.
+7. Respect both upstream MIT notices and verify any independently licensed assets; see [third-party notices](docs/THIRD-PARTY-NOTICES.md).
 
 ## Credits and licensing
 
 Original project: **CreeperHost Chickens**, with credit to **CreeperHost, gigabit101, and the original contributors**. This is a community port and is **not affiliated with or endorsed by the original authors**.
 
-The NeoForge metadata currently declares `MIT`, and this repository contains `LICENSE-original-MIT.txt`. The upstream [CreeperHost Chickens MIT notice](https://github.com/CreeperHost/Chickens/blob/master/LICENSE.txt) matches `LICENSE-original-MIT.txt`. The original [Roost MIT notice](https://github.com/timrwood/roost/blob/master/license.txt) credits Tim Wood and David Vierra and is preserved as `LICENSE-roost-MIT.txt`. Both notices are included under `META-INF/` in the built JAR and checked by Gradle. Exact matching Git blob hashes confirm that this port carries assets present in Roost. These findings support redistribution **subject to preserving both notices**; they do not establish that every individual asset has no external rights or additional restrictions.
+The NeoForge metadata declares `MIT`. The upstream [CreeperHost Chickens MIT notice](https://github.com/CreeperHost/Chickens/blob/master/LICENSE.txt) matches `LICENSE-original-MIT.txt`. The original [Roost MIT notice](https://github.com/timrwood/roost/blob/master/license.txt) credits Tim Wood and David Vierra and is preserved as `LICENSE-roost-MIT.txt`. Both notices are included under `META-INF/` in the built JAR and checked by Gradle. Exact matching Git blob hashes confirm that this port carries assets present in Roost. These findings support redistribution **subject to preserving both notices**; they do not establish that every individual asset has no external rights or additional restrictions. Refer to [third-party notices](docs/THIRD-PARTY-NOTICES.md) for the provenance review.
