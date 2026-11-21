@@ -35,7 +35,8 @@ public final class SpeciesLayConfig {
 
     private record Settings(Map<String, Float> coefficients, Map<String, Boolean> enabled,
                             Map<String, String> layItems, Map<String, String> dropItems,
-                            Map<String, ChickenPedigrees.Parents> parents) {}
+                            Map<String, ChickenPedigrees.Parents> parents,
+                            Map<String, Integer> spawnChances) {}
 
     private SpeciesLayConfig() {}
 
@@ -64,6 +65,12 @@ public final class SpeciesLayConfig {
         return Values.SETTINGS.dropItems().get(key);
     }
 
+    /** Natural spawn attempt acceptance percentage. Missing settings preserve 100%. */
+    public static int naturalSpawnChanceFor(String id) {
+        String key = id.startsWith("chickens:") ? id : "chickens:" + id;
+        return Values.SETTINGS.spawnChances().getOrDefault(key, 100);
+    }
+
     /** Disabled species cannot spawn naturally or be produced by breeding. */
     public static boolean isEnabled(String id) {
         String key = id.startsWith("chickens:") ? id : "chickens:" + id;
@@ -86,6 +93,7 @@ public final class SpeciesLayConfig {
                 settings.addProperty("drop_item", "");
                 settings.addProperty("parent_1", type.parentA());
                 settings.addProperty("parent_2", type.parentB());
+                settings.addProperty("natural_spawn_chance", 100);
                 root.add(key, settings);
                 changed = true;
             } else if (root.get(key).isJsonObject()) {
@@ -114,6 +122,10 @@ public final class SpeciesLayConfig {
                     settings.addProperty("parent_2", type.parentB());
                     changed = true;
                 }
+                if (!settings.has("natural_spawn_chance")) {
+                    settings.addProperty("natural_spawn_chance", 100);
+                    changed = true;
+                }
             } else {
                 LOGGER.warn("Skipping non-object species entry {} in chickens.json", key);
             }
@@ -129,7 +141,7 @@ public final class SpeciesLayConfig {
     }
 
     private static Settings defaults() {
-        return new Settings(Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
+        return new Settings(Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
     }
 
     private static Settings load() {
@@ -168,6 +180,7 @@ public final class SpeciesLayConfig {
             Map<String, String> layItems = new HashMap<>();
             Map<String, String> dropItems = new HashMap<>();
             Map<String, ChickenPedigrees.Parents> candidateParents = new HashMap<>();
+            Map<String, Integer> spawnChances = new HashMap<>();
             for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
                 if (!entry.getKey().startsWith("chickens:")
                         || !entry.getValue().isJsonObject()) {
@@ -204,6 +217,24 @@ public final class SpeciesLayConfig {
                         }
                     } else {
                         LOGGER.warn("Invalid drop_item for {}; ignoring", entry.getKey());
+                    }
+                }
+                if (species.has("natural_spawn_chance")) {
+                    JsonElement chance = species.get("natural_spawn_chance");
+                    if (chance.isJsonPrimitive() && chance.getAsJsonPrimitive().isNumber()) {
+                        try {
+                            String raw = chance.getAsString();
+                            int percent = Integer.parseInt(raw);
+                            if (percent >= 0 && percent <= 100) {
+                                spawnChances.put(entry.getKey(), percent);
+                            } else {
+                                LOGGER.warn("natural_spawn_chance outside 0..100 for {}; using 100", entry.getKey());
+                            }
+                        } catch (NumberFormatException invalidPercent) {
+                            LOGGER.warn("natural_spawn_chance must be an integer for {}; using 100", entry.getKey());
+                        }
+                    } else {
+                        LOGGER.warn("Invalid natural_spawn_chance for {}; using 100", entry.getKey());
                     }
                 }
                 if (species.has("parent_1") && species.has("parent_2")) {
@@ -255,7 +286,8 @@ public final class SpeciesLayConfig {
                     loaded.size(), enabled.size(), layItems.size(), dropItems.size(), validatedParents.size());
             return new Settings(Collections.unmodifiableMap(loaded),
                     Collections.unmodifiableMap(enabled), Collections.unmodifiableMap(layItems),
-                    Collections.unmodifiableMap(dropItems), validatedParents);
+                    Collections.unmodifiableMap(dropItems), validatedParents,
+                    Collections.unmodifiableMap(spawnChances));
         } catch (IOException | RuntimeException error) {
             LOGGER.error("Failed to load Chickens species config {}; using defaults", configFile, error);
             return defaults();
