@@ -70,7 +70,9 @@ public final class BlockEntityRoost extends BlockEntity implements MenuProvider 
         ChickenStats stats = ChickenStatsCodec.read(input);
         int gainFactor = 1 + (stats.getGain() >= 5 ? 1 : 0) + (stats.getGain() >= 10 ? 1 : 0);
         output.setCount(output.getCount() * gainFactor * input.getCount());
-        if (!MachineOutputs.canInsert(machine.inventory, 1, output)) { machine.setProgress(0); return; }
+        // When all output slots are full, pause without discarding completed work.
+        // Resume from the same progress once the player or automation frees space.
+        if (!MachineOutputs.canInsert(machine.inventory, 1, output)) return;
 
         if (machine.progress <= 1000) {
             machine.setProgress(machine.progress + Math.min(stats.getGrowth() + input.getCount() + 1, 50));
