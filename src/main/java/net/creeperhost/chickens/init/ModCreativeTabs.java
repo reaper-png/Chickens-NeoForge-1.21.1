@@ -32,6 +32,11 @@ public final class ModCreativeTabs {
                         for (ChickenSpecies type : ChickensRegistry.getItems()) {
                             output.accept(ChickenItemData.create(ModItems.CHICKEN_ITEM.get(), type));
                         }
+                        // Original ItemSpawnEgg exposed one spawn egg per breed.
+                        // Keep registry IDs and type metadata identical.
+                        for (ChickenSpecies type : ChickensRegistry.getItems()) {
+                            output.accept(ChickenItemData.create(ModItems.SPAWN_EGG.get(), type));
+                        }
                         // The original creative inventory also exposes all
                         // 16 dye-colored throwable eggs, not only chicken items.
                         for (ChickenSpecies type : ChickensRegistry.getItems()) {
