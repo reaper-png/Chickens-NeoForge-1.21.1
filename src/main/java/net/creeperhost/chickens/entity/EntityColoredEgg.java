@@ -3,6 +3,7 @@ package net.creeperhost.chickens.entity;
 import net.creeperhost.chickens.init.ModEntities;
 import net.creeperhost.chickens.init.ModItems;
 import net.creeperhost.chickens.item.ColoredEggSpecies;
+import net.creeperhost.chickens.item.ChickenItemData;
 import net.creeperhost.chickens.registry.ChickenSpecies;
 import net.creeperhost.chickens.registry.ChickensRegistry;
 import net.minecraft.core.HolderLookup;
@@ -58,6 +59,15 @@ public final class EntityColoredEgg extends ThrowableItemProjectile {
     }
     @Override public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        setChickenType(tag.getString("Type"));
+        String savedType = tag.getString("Type");
+        // Older/edited projectile NBT may be missing the separate Type field.
+        // Recover from the egg item itself without granting non-dye eggs access.
+        if (savedType.isEmpty()) {
+            ChickenSpecies fromItem = ChickenItemData.type(getItem());
+            if (ColoredEggSpecies.isEligible(fromItem)) {
+                savedType = "chickens:" + fromItem.id();
+            }
+        }
+        setChickenType(savedType);
     }
 }
