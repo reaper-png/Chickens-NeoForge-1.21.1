@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 
 /**
  * Reads the legacy Chickens config/chickens/chickens.json structure.
- * Supports lay_coefficient, is_enabled and lay_item; remaining legacy fields are not interpreted.
+ * Supports lay_coefficient, is_enabled, lay_item and optional drop_item.
  */
 public final class SpeciesLayConfig {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -33,7 +33,7 @@ public final class SpeciesLayConfig {
     }
 
     private record Settings(Map<String, Float> coefficients, Map<String, Boolean> enabled,
-                            Map<String, String> layItems) {}
+                            Map<String, String> layItems, Map<String, String> dropItems) {}
 
     private SpeciesLayConfig() {}
 
@@ -55,6 +55,12 @@ public final class SpeciesLayConfig {
         return Values.SETTINGS.layItems().get(key);
     }
 
+    /** Empty or absent drop_item means no extra custom death drop. */
+    public static String dropItemFor(String id) {
+        String key = id.startsWith("chickens:") ? id : "chickens:" + id;
+        return Values.SETTINGS.dropItems().get(key);
+    }
+
     /** Disabled species cannot spawn naturally or be produced by breeding. */
     public static boolean isEnabled(String id) {
         String key = id.startsWith("chickens:") ? id : "chickens:" + id;
@@ -74,6 +80,7 @@ public final class SpeciesLayConfig {
                 settings.addProperty("lay_coefficient", 1.0f);
                 settings.addProperty("is_enabled", true);
                 settings.addProperty("lay_item", type.product());
+                settings.addProperty("drop_item", "");
                 root.add(key, settings);
                 changed = true;
             } else if (root.get(key).isJsonObject()) {
@@ -90,6 +97,10 @@ public final class SpeciesLayConfig {
                     settings.addProperty("lay_item", type.product());
                     changed = true;
                 }
+                if (!settings.has("drop_item")) {
+                    settings.addProperty("drop_item", "");
+                    changed = true;
+                }
             } else {
                 LOGGER.warn("Skipping non-object species entry {} in chickens.json", key);
             }
@@ -98,7 +109,7 @@ public final class SpeciesLayConfig {
     }
 
     private static Settings defaults() {
-        return new Settings(Map.of(), Map.of(), Map.of());
+        return new Settings(Map.of(), Map.of(), Map.of(), Map.of());
     }
 
     private static Settings load() {
@@ -135,6 +146,7 @@ public final class SpeciesLayConfig {
             Map<String, Float> loaded = new HashMap<>();
             Map<String, Boolean> enabled = new HashMap<>();
             Map<String, String> layItems = new HashMap<>();
+            Map<String, String> dropItems = new HashMap<>();
             for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
                 if (!entry.getKey().startsWith("chickens:")
                         || !entry.getValue().isJsonObject()) {
@@ -162,6 +174,17 @@ public final class SpeciesLayConfig {
                         LOGGER.warn("Invalid lay_item for {}; using original product", entry.getKey());
                     }
                 }
+                if (species.has("drop_item")) {
+                    JsonElement dropItem = species.get("drop_item");
+                    if (dropItem.isJsonPrimitive() && dropItem.getAsJsonPrimitive().isString()) {
+                        String descriptor = dropItem.getAsString().trim();
+                        if (!descriptor.isEmpty()) {
+                            dropItems.put(entry.getKey(), descriptor);
+                        }
+                    } else {
+                        LOGGER.warn("Invalid drop_item for {}; ignoring", entry.getKey());
+                    }
+                }
                 if (!species.has("lay_coefficient")) {
                     continue;
                 }
@@ -177,10 +200,11 @@ public final class SpeciesLayConfig {
                     LOGGER.warn("Invalid lay_coefficient for {}", entry.getKey(), invalidValue);
                 }
             }
-            LOGGER.info("Loaded {} laying coefficients, {} enabled settings and {} product settings",
-                    loaded.size(), enabled.size(), layItems.size());
+            LOGGER.info("Loaded {} laying coefficients, {} enabled flags, {} laying products and {} death drops",
+                    loaded.size(), enabled.size(), layItems.size(), dropItems.size());
             return new Settings(Collections.unmodifiableMap(loaded),
-                    Collections.unmodifiableMap(enabled), Collections.unmodifiableMap(layItems));
+                    Collections.unmodifiableMap(enabled), Collections.unmodifiableMap(layItems),
+                    Collections.unmodifiableMap(dropItems));
         } catch (IOException | RuntimeException error) {
             LOGGER.error("Failed to load Chickens species config {}; using defaults", configFile, error);
             return defaults();
