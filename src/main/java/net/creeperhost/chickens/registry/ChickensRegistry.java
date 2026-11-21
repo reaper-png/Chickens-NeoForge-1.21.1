@@ -6,6 +6,7 @@ import net.creeperhost.chickens.config.LayTimeMath;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -111,15 +112,29 @@ public final class ChickensRegistry {
     }
 
     public static int getTier(ChickenSpecies type) {
-        return tier(Objects.requireNonNull(type), new java.util.HashSet<>());
+        return tier(Objects.requireNonNull(type), new HashMap<>());
     }
 
-    private static int tier(ChickenSpecies type, java.util.Set<String> path) {
-        var parents = parentsOf(type);
-        if (!parents.hasParents()) return 1;
+    /**
+     * Cache effective tiers for one selection only. This avoids recomputing
+     * shared ancestors while respecting the installed pedigree overrides.
+     */
+    private static int tier(ChickenSpecies type, Map<String, Integer> cache) {
+        return tier(type, cache, new java.util.HashSet<>());
+    }
+
+    private static int tier(ChickenSpecies type, Map<String, Integer> cache,
+                            java.util.Set<String> path) {
+        Integer previous = cache.get(type.id());
+        if (previous != null) return previous;
         if (!path.add(type.id())) throw new IllegalStateException("Cyclic chicken pedigree " + type.id());
-        int value = 1 + Math.max(tier(TYPES.get(parents.first()), path), tier(TYPES.get(parents.second()), path));
+        var parents = parentsOf(type);
+        int value = parents.hasParents()
+                ? 1 + Math.max(tier(TYPES.get(parents.first()), cache, path),
+                        tier(TYPES.get(parents.second()), cache, path))
+                : 1;
         path.remove(type.id());
+        cache.put(type.id(), value);
         return value;
     }
 
@@ -147,14 +162,15 @@ public final class ChickensRegistry {
         for (ChickenSpecies type : TYPES.values()) {
             if (enabled.test(type) && isChildOf(type, first, second)) children.add(type);
         }
+        Map<String, Integer> tiers = new HashMap<>();
         int max = 1;
-        for (ChickenSpecies type : children) max = Math.max(max, getTier(type));
+        for (ChickenSpecies type : children) max = Math.max(max, tier(type, tiers));
         max++;
         int total = 0;
-        for (ChickenSpecies type : children) total += max - getTier(type);
+        for (ChickenSpecies type : children) total += max - tier(type, tiers);
         int roll = rollBounded.applyAsInt(total);
         for (ChickenSpecies type : children) {
-            roll -= max - getTier(type);
+            roll -= max - tier(type, tiers);
             if (roll < 0) return type;
         }
         throw new IllegalStateException("Invalid breeding weight");
@@ -175,11 +191,12 @@ public final class ChickensRegistry {
         for (ChickenSpecies possible : TYPES.values()) {
             if (SpeciesLayConfig.isEnabled(possible.id()) && isChildOf(possible, a, b)) list.add(possible);
         }
+        Map<String, Integer> tiers = new HashMap<>();
         int max = 1;
-        for (ChickenSpecies possible : list) max = Math.max(max, getTier(possible));
+        for (ChickenSpecies possible : list) max = Math.max(max, tier(possible, tiers));
         max++;
         int total = 0;
-        for (ChickenSpecies possible : list) total += max - getTier(possible);
-        return 100.0f * (max - getTier(child)) / total;
+        for (ChickenSpecies possible : list) total += max - tier(possible, tiers);
+        return 100.0f * (max - tier(child, tiers)) / total;
     }
 }
