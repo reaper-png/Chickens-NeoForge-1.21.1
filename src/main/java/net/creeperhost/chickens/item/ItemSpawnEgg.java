@@ -37,6 +37,19 @@ public final class ItemSpawnEgg extends ItemChicken {
         chicken.moveTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D,
                 context.getRotation(), 0.0F);
         chicken.setAnalyzed(true);
+        // The original spawn egg reads optional genetics and the legacy
+        // baby/love flags. Unlike a captured chicken, it does not restore
+        // exact age, analyzer status, or remaining lay timer.
+        ItemStack egg = context.getItemInHand();
+        chicken.applyStats(net.creeperhost.chickens.data.ChickenStatsCodec.read(egg));
+        Integer capturedAge = ChickenItemData.capturedAgeTicks(egg);
+        if (capturedAge != null) {
+            chicken.setAge(capturedAge);
+        } else {
+            chicken.setBaby(ChickenItemData.wasBaby(egg));
+        }
+        int loveTime = ChickenItemData.loveTicks(egg);
+        if (loveTime > 0) chicken.setInLoveTime(loveTime);
 
         if (!context.getLevel().addFreshEntity(chicken)) return InteractionResult.FAIL;
         if (!context.getPlayer().getAbilities().instabuild) context.getItemInHand().shrink(1);
