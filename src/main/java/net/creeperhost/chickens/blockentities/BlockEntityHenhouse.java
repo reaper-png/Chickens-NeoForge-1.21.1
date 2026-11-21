@@ -9,6 +9,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +28,7 @@ public final class BlockEntityHenhouse extends BlockEntity implements MenuProvid
     private static final int RANGE = 5;
     // Reused across collections: closest offsets first, with original tie order.
     private static final List<BlockPos> NEAREST_OFFSETS = nearestOffsets();
-    private final HenhouseInventory inventory = new HenhouseInventory(this::setChanged);
+    private final HenhouseInventory inventory = new HenhouseInventory(this::onInventoryChanged);
     private final HenhouseAutomation automation = new HenhouseAutomation(inventory);
     private final ContainerData data = new ContainerData() {
         @Override public int get(int index) { return index == 0 ? energy : 0; }
@@ -42,6 +44,25 @@ public final class BlockEntityHenhouse extends BlockEntity implements MenuProvid
     public HenhouseAutomation automation() { return automation; }
     public ContainerData data() { return data; }
     public int energy() { return energy; }
+
+    private void onInventoryChanged(int slot) {
+        setChanged();
+        // GUI slot and energy updates use ordinary menu synchronization.
+        // Only fuel input changes require an explicit block entity update.
+        if (slot == 0 && level instanceof ServerLevel serverLevel) {
+            serverLevel.getChunkSource().blockChanged(worldPosition);
+        }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
 
     /** Only examines loaded positions in the old five-block neighbourhood; never forces chunks. */
     public static ItemStack collectNearby(Level level, Vec3 chickenPos, ItemStack dropped) {
