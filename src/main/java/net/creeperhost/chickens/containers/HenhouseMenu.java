@@ -19,20 +19,22 @@ public final class HenhouseMenu extends AbstractContainerMenu {
     private static final int MACHINE_SLOTS = 11;
     private final ContainerData data;
     private final ContainerLevelAccess access;
+    private final BlockEntityHenhouse openedHouse;
 
     public HenhouseMenu(int id, Inventory playerInv) {
         this(id, playerInv, new ItemStackHandler(MACHINE_SLOTS),
-                new SimpleContainerData(1), ContainerLevelAccess.NULL);
+                new SimpleContainerData(1), ContainerLevelAccess.NULL, null);
     }
     public HenhouseMenu(int id, Inventory playerInv, BlockEntityHenhouse house) {
         this(id, playerInv, house.inventory(), house.data(),
-                ContainerLevelAccess.create(house.getLevel(), house.getBlockPos()));
+                ContainerLevelAccess.create(house.getLevel(), house.getBlockPos()), house);
     }
     private HenhouseMenu(int id, Inventory playerInv, ItemStackHandler contents,
-                         ContainerData data, ContainerLevelAccess access) {
+                         ContainerData data, ContainerLevelAccess access, BlockEntityHenhouse openedHouse) {
         super(ModMenus.HENHOUSE.get(), id);
         this.data = data;
         this.access = access;
+        this.openedHouse = openedHouse;
         addSlot(new SlotItemHandler(contents, 0, 25, 19) {
             @Override public boolean mayPlace(ItemStack stack) { return stack.is(Blocks.HAY_BLOCK.asItem()); }
         });
@@ -57,7 +59,7 @@ public final class HenhouseMenu extends AbstractContainerMenu {
     public int energy() { return data.get(0); }
     @Override public boolean stillValid(Player player) {
         return access.evaluate((level, pos) ->
-                level.getBlockEntity(pos) instanceof BlockEntityHenhouse &&
+                openedHouse != null && level.getBlockEntity(pos) == openedHouse &&
                 player.distanceToSqr(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5) <= 64, false);
     }
     @Override public ItemStack quickMoveStack(Player player, int slotIndex) {
