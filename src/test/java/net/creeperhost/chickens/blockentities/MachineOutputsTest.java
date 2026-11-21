@@ -1,6 +1,7 @@
 package net.creeperhost.chickens.blockentities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,12 +19,10 @@ final class MachineOutputsTest {
     }
 
     @Test
-    void fullOrIncompatibleSlotsProvideNoCapacity() {
+    void fullSlotsProvideNoCapacity() {
         assertEquals(2, OutputCapacityMath.remainingAfterSlot(2, 64, 64, 64));
-        // Mismatched item components must be skipped by MachineOutputs,
-        // therefore the amount remains unchanged.
-        int remaining = 1;
-        assertEquals(1, remaining);
+        // ItemStack component identity is tested only with a NeoForge-aware
+        // integration environment. This pure-Java helper checks capacity. 
     }
 
     @Test
@@ -31,6 +30,25 @@ final class MachineOutputsTest {
         assertEquals(3, OutputCapacityMath.remainingAfterSlot(4, 15, 64, 16));
         assertEquals(2, OutputCapacityMath.remainingAfterSlot(5, 2, 5, 64));
         assertEquals(1, OutputCapacityMath.remainingAfterSlot(1, 63, 64, 16));
+    }
+
+    @Test
+    void capacityNeverCreatesOrLosesItemsAcrossSlotLimits() {
+        for (int slotLimit = 1; slotLimit <= 64; slotLimit++) {
+            for (int itemMax = 1; itemMax <= 64; itemMax++) {
+                int effectiveLimit = Math.min(slotLimit, itemMax);
+                for (int count = 0; count <= effectiveLimit + 1; count++) {
+                    int capacity = Math.max(0, effectiveLimit - count);
+                    for (int requested : new int[] { 0, 1, 2, effectiveLimit, effectiveLimit + 1, 128 }) {
+                        int remaining = OutputCapacityMath.remainingAfterSlot(
+                                requested, count, slotLimit, itemMax);
+                        int expected = Math.max(0, requested - capacity);
+                        assertEquals(expected, remaining);
+                        assertTrue(remaining >= 0 && remaining <= requested);
+                    }
+                }
+            }
+        }
     }
 
     @Test
