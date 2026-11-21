@@ -18,6 +18,7 @@ import java.util.function.Predicate;
  */
 public final class ChickensRegistry {
     private static final Map<String, ChickenSpecies> TYPES = buildTypes();
+    private static volatile Map<String, ChickenPedigrees.Parents> PARENT_OVERRIDES = Map.of();
     private ChickensRegistry() {}
 
     private static Map<String, ChickenSpecies> buildTypes() {
@@ -86,6 +87,23 @@ public final class ChickensRegistry {
     }
 
     public static Collection<ChickenSpecies> getItems() { return TYPES.values(); }
+
+    /** Atomically installs a validated pedigree map during mod common setup. */
+    public static void installParentOverrides(Map<String, ChickenPedigrees.Parents> candidates) {
+        PARENT_OVERRIDES = ChickenPedigrees.validate(TYPES, Map.copyOf(candidates));
+    }
+
+    public static ChickenPedigrees.Parents parentsOf(ChickenSpecies type) {
+        return PARENT_OVERRIDES.getOrDefault(type.id(),
+                new ChickenPedigrees.Parents(type.parentA(), type.parentB()));
+    }
+
+    public static boolean isChildOf(ChickenSpecies child, ChickenSpecies a, ChickenSpecies b) {
+        var parents = parentsOf(child);
+        return parents.hasParents()
+                && ((parents.first().equals(a.id()) && parents.second().equals(b.id()))
+                || (parents.first().equals(b.id()) && parents.second().equals(a.id())));
+    }
     public static ChickenSpecies getByRegistryName(String id) {
         if (id == null) return null;
         String local = id.startsWith("chickens:") ? id.substring(9) : id;
@@ -97,9 +115,10 @@ public final class ChickensRegistry {
     }
 
     private static int tier(ChickenSpecies type, java.util.Set<String> path) {
-        if (!type.hasParents()) return 1;
+        var parents = parentsOf(type);
+        if (!parents.hasParents()) return 1;
         if (!path.add(type.id())) throw new IllegalStateException("Cyclic chicken pedigree " + type.id());
-        int value = 1 + Math.max(tier(TYPES.get(type.parentA()), path), tier(TYPES.get(type.parentB()), path));
+        int value = 1 + Math.max(tier(TYPES.get(parents.first()), path), tier(TYPES.get(parents.second()), path));
         path.remove(type.id());
         return value;
     }
@@ -126,7 +145,7 @@ public final class ChickensRegistry {
         children.add(first);
         children.add(second); // Deliberately preserve the original double weight for same-breed parents.
         for (ChickenSpecies type : TYPES.values()) {
-            if (enabled.test(type) && type.isChildOf(first, second)) children.add(type);
+            if (enabled.test(type) && isChildOf(type, first, second)) children.add(type);
         }
         int max = 1;
         for (ChickenSpecies type : children) max = Math.max(max, getTier(type));
@@ -147,16 +166,20 @@ public final class ChickensRegistry {
     }
     public static int getMaxLayTime(ChickenSpecies type) { return getMinLayTime(type) * 2; }
     public static float getChildChance(ChickenSpecies child) {
-        if (!SpeciesLayConfig.isEnabled(child.id()) || !child.hasParents()) return 0;
-        ChickenSpecies a = getByRegistryName(child.parentA());
-        ChickenSpecies b = getByRegistryName(child.parentB());
-        List<ChickenSpecies> list = new ArrayList<>(List.of(a,b));
-        for (ChickenSpecies possible: TYPES.values()) if (possible.isChildOf(a,b)) list.add(possible);
-        int max=1;
-        for (ChickenSpecies possible:list) max=Math.max(max,getTier(possible));
+        var parents = parentsOf(child);
+        if (!SpeciesLayConfig.isEnabled(child.id()) || !parents.hasParents()) return 0;
+        ChickenSpecies a = getByRegistryName(parents.first());
+        ChickenSpecies b = getByRegistryName(parents.second());
+        if (!SpeciesLayConfig.isEnabled(a.id()) || !SpeciesLayConfig.isEnabled(b.id())) return 0;
+        List<ChickenSpecies> list = new ArrayList<>(List.of(a, b));
+        for (ChickenSpecies possible : TYPES.values()) {
+            if (SpeciesLayConfig.isEnabled(possible.id()) && isChildOf(possible, a, b)) list.add(possible);
+        }
+        int max = 1;
+        for (ChickenSpecies possible : list) max = Math.max(max, getTier(possible));
         max++;
-        int total=0;
-        for (ChickenSpecies possible:list) total+=max-getTier(possible);
+        int total = 0;
+        for (ChickenSpecies possible : list) total += max - getTier(possible);
         return 100.0f * (max - getTier(child)) / total;
     }
 }

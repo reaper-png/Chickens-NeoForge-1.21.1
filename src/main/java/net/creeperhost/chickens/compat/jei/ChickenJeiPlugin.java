@@ -94,9 +94,13 @@ public final class ChickenJeiPlugin implements IModPlugin {
             if (!deathDrop.isEmpty()) {
                 drops.add(new ChickenJeiRecipe(chicken.copy(), ItemStack.EMPTY, deathDrop));
             }
-            if (species.hasParents()) {
-                ChickenSpecies a = ChickensRegistry.getByRegistryName(species.parentA());
-                ChickenSpecies b = ChickensRegistry.getByRegistryName(species.parentB());
+            var parents = ChickensRegistry.parentsOf(species);
+            if (parents.hasParents() && net.creeperhost.chickens.config.SpeciesLayConfig.isEnabled(species.id())) {
+                ChickenSpecies a = ChickensRegistry.getByRegistryName(parents.first());
+                ChickenSpecies b = ChickensRegistry.getByRegistryName(parents.second());
+                if (a == null || b == null
+                        || !net.creeperhost.chickens.config.SpeciesLayConfig.isEnabled(a.id())
+                        || !net.creeperhost.chickens.config.SpeciesLayConfig.isEnabled(b.id())) continue;
                 if (a == null || b == null) continue;
                 breeding.add(new ChickenJeiRecipe(
                         ChickenItemData.create(ModItems.CHICKEN_ITEM.get(), a),
