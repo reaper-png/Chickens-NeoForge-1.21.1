@@ -150,7 +150,7 @@ public final class SpeciesLayConfig {
      * Stage the complete JSON beside the target before replacing it.
      * A failed serialization or write must not truncate an existing config.
      */
-    private static void writeConfigSafely(Path configFile, String contents) throws IOException {
+    static void writeConfigSafely(Path configFile, String contents) throws IOException {
         Path directory = configFile.getParent();
         Files.createDirectories(directory);
         Path temporary = Files.createTempFile(directory, "chickens-", ".json.tmp");
