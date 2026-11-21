@@ -1,6 +1,7 @@
 package net.creeperhost.chickens;
 
 import net.creeperhost.chickens.events.SmartChickenConversion;
+import net.creeperhost.chickens.events.ChickenDeathDrops;
 import net.creeperhost.chickens.config.ChickensConfig;
 import net.creeperhost.chickens.config.SpeciesLayConfig;
 import net.creeperhost.chickens.init.ModBlocks;
@@ -45,6 +46,7 @@ public final class ChickensMod {
         modEventBus.addListener(ChickensMod::onSpawnPlacements);
         modEventBus.addListener(ChickensMod::onCommonSetup);
         NeoForge.EVENT_BUS.addListener(SmartChickenConversion::onEntityInteract);
+        NeoForge.EVENT_BUS.addListener(ChickenDeathDrops::onLivingDrops);
     }
 
     private static void onCommonSetup(FMLCommonSetupEvent event) {
