@@ -47,6 +47,11 @@ public final class SmartChickenConversion {
         smart.moveTo(original.getX(), original.getY(), original.getZ(),
                 original.getYRot(), original.getXRot());
         smart.setAge(original.getAge());
+        // Preserve an active breeding window when converting an adult chicken.
+        // Creating a new entity otherwise resets the vanilla Animal love timer.
+        if (original.getInLoveTime() > 0) {
+            smart.setInLoveTime(original.getInLoveTime());
+        }
         smart.setHealth(Math.min(original.getHealth(), smart.getMaxHealth()));
         if (original.hasCustomName()) {
             smart.setCustomName(original.getCustomName());
