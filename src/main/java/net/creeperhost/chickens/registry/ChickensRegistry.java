@@ -109,10 +109,13 @@ public final class ChickensRegistry {
         Objects.requireNonNull(second);
         Objects.requireNonNull(rollBounded);
         List<ChickenSpecies> children = new ArrayList<>();
+        if (!SpeciesLayConfig.isEnabled(first.id()) || !SpeciesLayConfig.isEnabled(second.id())) {
+            return null;
+        }
         children.add(first);
         children.add(second); // Deliberately preserve the original double weight for same-breed parents.
         for (ChickenSpecies type : TYPES.values()) {
-            if (type.isChildOf(first, second)) children.add(type);
+            if (SpeciesLayConfig.isEnabled(type.id()) && type.isChildOf(first, second)) children.add(type);
         }
         int max = 1;
         for (ChickenSpecies type : children) max = Math.max(max, getTier(type));
@@ -133,7 +136,7 @@ public final class ChickensRegistry {
     }
     public static int getMaxLayTime(ChickenSpecies type) { return getMinLayTime(type) * 2; }
     public static float getChildChance(ChickenSpecies child) {
-        if (!child.hasParents()) return 0;
+        if (!SpeciesLayConfig.isEnabled(child.id()) || !child.hasParents()) return 0;
         ChickenSpecies a = getByRegistryName(child.parentA());
         ChickenSpecies b = getByRegistryName(child.parentB());
         List<ChickenSpecies> list = new ArrayList<>(List.of(a,b));

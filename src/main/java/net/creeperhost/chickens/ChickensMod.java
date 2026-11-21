@@ -86,6 +86,9 @@ public final class ChickensMod {
 
     private static boolean canNaturallySpawn(
             ChickenSpecies species, ServerLevelAccessor level, BlockPos pos) {
+        if (!SpeciesLayConfig.isEnabled(species.id())) {
+            return false;
+        }
         if (!level.getBlockState(pos.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON)) {
             return false;
         }

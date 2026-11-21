@@ -1,6 +1,7 @@
 package net.creeperhost.chickens.events;
 
 import net.creeperhost.chickens.entity.EntityChickensChicken;
+import net.creeperhost.chickens.config.SpeciesLayConfig;
 import net.creeperhost.chickens.init.ModEntities;
 import net.creeperhost.chickens.registry.ChickensRegistry;
 import net.minecraft.world.InteractionResult;
@@ -21,6 +22,10 @@ public final class SmartChickenConversion {
         }
         ItemStack book = event.getItemStack();
         if (!book.is(Items.BOOK)) {
+            return;
+        }
+
+        if (!SpeciesLayConfig.isEnabled("smart_chicken")) {
             return;
         }
 
