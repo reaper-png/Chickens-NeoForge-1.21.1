@@ -29,18 +29,26 @@ public final class SpeciesLayConfig {
     private static final long MAX_CONFIG_BYTES = 1024L * 1024L;
 
     private static final class Values {
-        private static final Map<String, Float> COEFFICIENTS = load();
+        private static final Settings SETTINGS = load();
     }
+
+    private record Settings(Map<String, Float> coefficients, Map<String, Boolean> enabled) {}
 
     private SpeciesLayConfig() {}
 
     /** Called during common setup so the file exists before a chicken spawns. */
     public static void initialize() {
-        Values.COEFFICIENTS.size();
+        Values.SETTINGS.coefficients().size();
     }
 
     public static float coefficientFor(String id) {
-        return Values.COEFFICIENTS.getOrDefault("chickens:" + id, 1.0f);
+        return Values.SETTINGS.coefficients().getOrDefault("chickens:" + id, 1.0f);
+    }
+
+    /** Disabled species cannot spawn naturally or be produced by breeding. */
+    public static boolean isEnabled(String id) {
+        String key = id.startsWith("chickens:") ? id : "chickens:" + id;
+        return Values.SETTINGS.enabled().getOrDefault(key, true);
     }
 
     /**
@@ -54,12 +62,17 @@ public final class SpeciesLayConfig {
             if (!root.has(key)) {
                 JsonObject settings = new JsonObject();
                 settings.addProperty("lay_coefficient", 1.0f);
+                settings.addProperty("is_enabled", true);
                 root.add(key, settings);
                 changed = true;
             } else if (root.get(key).isJsonObject()) {
                 JsonObject settings = root.getAsJsonObject(key);
                 if (!settings.has("lay_coefficient")) {
                     settings.addProperty("lay_coefficient", 1.0f);
+                    changed = true;
+                }
+                if (!settings.has("is_enabled")) {
+                    settings.addProperty("is_enabled", true);
                     changed = true;
                 }
             } else {
@@ -69,7 +82,11 @@ public final class SpeciesLayConfig {
         return changed;
     }
 
-    private static Map<String, Float> load() {
+    private static Settings defaults() {
+        return new Settings(Map.of(), Map.of());
+    }
+
+    private static Settings load() {
         Path configFile = FMLPaths.CONFIGDIR.get()
                 .resolve("chickens").resolve("chickens.json");
         try {
@@ -77,7 +94,7 @@ public final class SpeciesLayConfig {
             if (Files.exists(configFile)) {
                 if (Files.size(configFile) > MAX_CONFIG_BYTES) {
                     LOGGER.warn("Chickens config exceeds 1 MiB; leaving it unchanged: {}", configFile);
-                    return Map.of();
+                    return defaults();
                 }
                 try (Reader reader = Files.newBufferedReader(configFile, StandardCharsets.UTF_8)) {
                     JsonElement parsed = JsonParser.parseReader(reader);
@@ -101,12 +118,21 @@ public final class SpeciesLayConfig {
             }
 
             Map<String, Float> loaded = new HashMap<>();
+            Map<String, Boolean> enabled = new HashMap<>();
             for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
                 if (!entry.getKey().startsWith("chickens:")
                         || !entry.getValue().isJsonObject()) {
                     continue;
                 }
                 JsonObject species = entry.getValue().getAsJsonObject();
+                if (species.has("is_enabled")) {
+                    JsonElement active = species.get("is_enabled");
+                    if (active.isJsonPrimitive() && active.getAsJsonPrimitive().isBoolean()) {
+                        enabled.put(entry.getKey(), active.getAsBoolean());
+                    } else {
+                        LOGGER.warn("Invalid is_enabled value for {}; using true", entry.getKey());
+                    }
+                }
                 if (!species.has("lay_coefficient")) {
                     continue;
                 }
@@ -122,8 +148,8 @@ public final class SpeciesLayConfig {
                     LOGGER.warn("Invalid lay_coefficient for {}", entry.getKey(), invalidValue);
                 }
             }
-            LOGGER.info("Loaded {} Chickens lay-coefficient settings", loaded.size());
-            return Collections.unmodifiableMap(loaded);
+            LOGGER.info("Loaded {} Chickens lay-coefficient settings and {} enabled settings", loaded.size(), enabled.size());
+            return new Settings(Collections.unmodifiableMap(loaded), Collections.unmodifiableMap(enabled));
         } catch (IOException | RuntimeException error) {
             LOGGER.error("Failed to load Chickens species config {}; using defaults", configFile, error);
             return Map.of();
