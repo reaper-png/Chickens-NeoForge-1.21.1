@@ -64,15 +64,21 @@ public final class ItemLiquidEgg extends Item {
         }
 
         if (level.isClientSide) return InteractionResult.SUCCESS;
-        var fluid = LiquidEggItemHandler.fluid(egg);
-        // Use the IFluidHandler overload on the LIVE stack: the ItemStack overload
-        // works on a one-item copy and would discard the other eggs in a stack.
+        // Fluid handlers operate on ONE container. Never expose a multi-egg
+        // hand stack to the fluid placement algorithm: it can otherwise
+        // drain/alter the whole stack while providing just one bucket.
+        ItemStack singleEgg = egg.copyWithCount(1);
+        var fluid = LiquidEggItemHandler.fluid(singleEgg);
         boolean placed = FluidUtil.tryPlaceFluid(player, level, context.getHand(),
                 context.getClickedPos().relative(context.getClickedFace()),
-                new LiquidEggItemHandler(egg),
+                new LiquidEggItemHandler(singleEgg),
                 new FluidStack(fluid, LiquidEggItemHandler.BUCKET_VOLUME));
-        // NeoForge performs the placement/vaporization and drains exactly 1000 mB
-        // only after the transfer succeeds. No additional shrink here.
+        if (placed) {
+            // The handler consumed the isolated egg, not the player's hand.
+            // Decrement the original stack exactly once after a successful
+            // placement or vaporization. Failed placement consumes nothing.
+            egg.shrink(1);
+        }
         return placed ? InteractionResult.SUCCESS : InteractionResult.FAIL;
     }
 }
