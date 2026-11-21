@@ -14,13 +14,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import net.creeperhost.chickens.registry.ChickenSpecies;
+import net.creeperhost.chickens.registry.ChickenPedigrees;
 import net.creeperhost.chickens.registry.ChickensRegistry;
 import net.neoforged.fml.loading.FMLPaths;
 import org.slf4j.Logger;
 
 /**
  * Reads the legacy Chickens config/chickens/chickens.json structure.
- * Supports lay_coefficient, is_enabled, lay_item and optional drop_item.
+ * Supports laying, activation, outputs and validated breeding parent overrides.
  */
 public final class SpeciesLayConfig {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -33,13 +34,15 @@ public final class SpeciesLayConfig {
     }
 
     private record Settings(Map<String, Float> coefficients, Map<String, Boolean> enabled,
-                            Map<String, String> layItems, Map<String, String> dropItems) {}
+                            Map<String, String> layItems, Map<String, String> dropItems,
+                            Map<String, ChickenPedigrees.Parents> parents) {}
 
     private SpeciesLayConfig() {}
 
     /** Called during common setup so the file exists before a chicken spawns. */
     public static void initialize() {
         Values.SETTINGS.coefficients().size();
+        ChickensRegistry.installParentOverrides(Values.SETTINGS.parents());
     }
 
     public static float coefficientFor(String id) {
@@ -81,6 +84,8 @@ public final class SpeciesLayConfig {
                 settings.addProperty("is_enabled", true);
                 settings.addProperty("lay_item", type.product());
                 settings.addProperty("drop_item", "");
+                settings.addProperty("parent_1", type.parentA());
+                settings.addProperty("parent_2", type.parentB());
                 root.add(key, settings);
                 changed = true;
             } else if (root.get(key).isJsonObject()) {
@@ -101,6 +106,14 @@ public final class SpeciesLayConfig {
                     settings.addProperty("drop_item", "");
                     changed = true;
                 }
+                if (!settings.has("parent_1")) {
+                    settings.addProperty("parent_1", type.parentA());
+                    changed = true;
+                }
+                if (!settings.has("parent_2")) {
+                    settings.addProperty("parent_2", type.parentB());
+                    changed = true;
+                }
             } else {
                 LOGGER.warn("Skipping non-object species entry {} in chickens.json", key);
             }
@@ -108,8 +121,15 @@ public final class SpeciesLayConfig {
         return changed;
     }
 
+    private static String normalizeParent(String value) {
+        String id = value.trim();
+        if (id.startsWith("chickens:")) id = id.substring("chickens:".length());
+        if (id.contains(":")) throw new IllegalArgumentException("Only registered Chickens breeds are supported");
+        return id;
+    }
+
     private static Settings defaults() {
-        return new Settings(Map.of(), Map.of(), Map.of(), Map.of());
+        return new Settings(Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
     }
 
     private static Settings load() {
@@ -147,6 +167,7 @@ public final class SpeciesLayConfig {
             Map<String, Boolean> enabled = new HashMap<>();
             Map<String, String> layItems = new HashMap<>();
             Map<String, String> dropItems = new HashMap<>();
+            Map<String, ChickenPedigrees.Parents> candidateParents = new HashMap<>();
             for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
                 if (!entry.getKey().startsWith("chickens:")
                         || !entry.getValue().isJsonObject()) {
@@ -185,6 +206,26 @@ public final class SpeciesLayConfig {
                         LOGGER.warn("Invalid drop_item for {}; ignoring", entry.getKey());
                     }
                 }
+                if (species.has("parent_1") && species.has("parent_2")) {
+                    try {
+                        JsonElement a = species.get("parent_1");
+                        JsonElement b = species.get("parent_2");
+                        if (!a.isJsonPrimitive() || !a.getAsJsonPrimitive().isString()
+                                || !b.isJsonPrimitive() || !b.getAsJsonPrimitive().isString()) {
+                            throw new IllegalArgumentException("Parents must be strings");
+                        }
+                        String first = normalizeParent(a.getAsString());
+                        String second = normalizeParent(b.getAsString());
+                        String id = entry.getKey().substring("chickens:".length());
+                        ChickenSpecies original = ChickensRegistry.getByRegistryName(id);
+                        if (original != null && (!first.equals(original.parentA())
+                                || !second.equals(original.parentB()))) {
+                            candidateParents.put(id, new ChickenPedigrees.Parents(first, second));
+                        }
+                    } catch (IllegalArgumentException invalidParents) {
+                        LOGGER.warn("Ignoring malformed breeding parents for {}", entry.getKey(), invalidParents);
+                    }
+                }
                 if (!species.has("lay_coefficient")) {
                     continue;
                 }
@@ -200,11 +241,21 @@ public final class SpeciesLayConfig {
                     LOGGER.warn("Invalid lay_coefficient for {}", entry.getKey(), invalidValue);
                 }
             }
-            LOGGER.info("Loaded {} laying coefficients, {} enabled flags, {} laying products and {} death drops",
-                    loaded.size(), enabled.size(), layItems.size(), dropItems.size());
+            Map<String, ChickenPedigrees.Parents> validatedParents;
+            try {
+                Map<String, ChickenSpecies> catalog = new HashMap<>();
+                for (ChickenSpecies type : ChickensRegistry.getItems()) catalog.put(type.id(), type);
+                validatedParents = ChickenPedigrees.validate(catalog, candidateParents);
+            } catch (IllegalArgumentException invalidPedigree) {
+                LOGGER.error("Invalid custom breeding graph: keeping original parents for all species", invalidPedigree);
+                validatedParents = Map.of();
+            }
+
+            LOGGER.info("Loaded {} laying coefficients, {} enabled flags, {} laying products, {} death drops and {} parent overrides",
+                    loaded.size(), enabled.size(), layItems.size(), dropItems.size(), validatedParents.size());
             return new Settings(Collections.unmodifiableMap(loaded),
                     Collections.unmodifiableMap(enabled), Collections.unmodifiableMap(layItems),
-                    Collections.unmodifiableMap(dropItems));
+                    Collections.unmodifiableMap(dropItems), validatedParents);
         } catch (IOException | RuntimeException error) {
             LOGGER.error("Failed to load Chickens species config {}; using defaults", configFile, error);
             return defaults();
