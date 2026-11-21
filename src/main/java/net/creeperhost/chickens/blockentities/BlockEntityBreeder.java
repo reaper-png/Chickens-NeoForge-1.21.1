@@ -148,7 +148,7 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
         super.loadAdditional(tag, registries);
         if (tag.contains("Inventory", 10)) inventory.deserializeNBT(registries, tag.getCompound("Inventory"));
         else if (tag.contains("Items", 9)) inventory.deserializeNBT(registries, tag);
-        progress = Math.max(0, tag.getInt("progress"));
+        progress = MachineProgressRecovery.breeder(tag.getInt("progress"));
         pendingOffspring = tag.contains("PendingOffspring", 10)
                 ? ItemStack.parseOptional(registries, tag.getCompound("PendingOffspring"))
                 : ItemStack.EMPTY;
