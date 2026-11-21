@@ -38,7 +38,7 @@ public final class ItemColoredEgg extends ItemChicken {
     @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         ChickenSpecies species = ChickenItemData.type(stack);
-        if (species == null) return InteractionResultHolder.fail(stack);
+        if (!ColoredEggSpecies.isEligible(species)) return InteractionResultHolder.fail(stack);
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.EGG_THROW, SoundSource.NEUTRAL, 0.5f,
                 0.4f / (level.random.nextFloat() * 0.4f + 0.8f));
