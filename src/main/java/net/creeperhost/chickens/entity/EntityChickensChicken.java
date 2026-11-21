@@ -40,7 +40,13 @@ public class EntityChickensChicken extends Chicken {
         super(type, level);
         // Never lay a vanilla egg; resource-laying uses an independent timer.
         this.eggTime = Integer.MAX_VALUE;
-        this.layTicks = 6000;
+        // Legacy Chickens 1.0.32 rolls the initial laying timer when an
+        // entity is constructed, using its registered species and tier.
+        // TYPE synced data can be empty here: species() resolves the real
+        // breed from the entity's registered EntityType as a fallback.
+        ChickenSpecies initialBreed = species();
+        if (initialBreed != null) resetLayingTime(initialBreed);
+        else this.layTicks = 6000;
     }
 
     @Override
@@ -165,7 +171,12 @@ public class EntityChickensChicken extends Chicken {
         applyStats(new ChickenStats(tag.contains("Gain") ? tag.getInt("Gain") : 1,
                 tag.contains("Growth") ? tag.getInt("Growth") : 1,
                 tag.contains("Strength") ? tag.getInt("Strength") : 1));
-        layTicks = tag.contains("EggLayTime") ? Math.max(1, tag.getInt("EggLayTime")) : 6000;
+        // Saves created by Chickens 1.0.32 have no EggLayTime key.
+        // Preserve the species-specific timer rolled by the constructor.
+        // Newer saves retain their exact remaining laying interval.
+        if (tag.contains("EggLayTime", 3)) {
+            layTicks = Math.max(1, tag.getInt("EggLayTime"));
+        }
         syncLayProgress();
     }
 }
