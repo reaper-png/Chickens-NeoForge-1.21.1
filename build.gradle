@@ -49,3 +49,31 @@ tasks.named('processResources', ProcessResources) {
         expand(mod_version: project.mod_version)
     }
 }
+
+
+// A successful Java compile does not guarantee the published JAR is loadable.
+// Verify the exact version in the archive's NeoForge metadata on every build.
+tasks.register('verifyPackagedModVersion') {
+    dependsOn tasks.named('jar')
+    doLast {
+        def jarFile = tasks.named('jar').get().archiveFile.get().asFile
+        new java.util.zip.ZipFile(jarFile).withCloseable { zip ->
+            def entry = zip.getEntry('META-INF/neoforge.mods.toml')
+            if (entry == null) {
+                throw new GradleException('Missing NeoForge metadata in ' + jarFile.name)
+            }
+            def metadata = zip.getInputStream(entry).withCloseable { stream ->
+                stream.getText('UTF-8')
+            }
+            def expected = 'version="' + project.mod_version + '"'
+            if (!metadata.readLines().any { it.trim() == expected }) {
+                throw new GradleException('Packaged NeoForge version differs from mod_version='
+                        + project.mod_version + ' in ' + jarFile.name)
+            }
+        }
+    }
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('verifyPackagedModVersion')
+}
