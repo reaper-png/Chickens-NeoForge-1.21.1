@@ -13,6 +13,7 @@ import net.creeperhost.chickens.init.ModMenus;
 import net.creeperhost.chickens.item.LiquidEggItemHandler;
 import net.creeperhost.chickens.registry.ChickenSpecies;
 import net.creeperhost.chickens.registry.ChickensRegistry;
+import net.creeperhost.chickens.worldgen.ChickenBiomeModifiers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.tags.BlockTags;
@@ -43,6 +44,7 @@ public final class ChickensMod {
         ModEntities.ENTITIES.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModCreativeTabs.TABS.register(modEventBus);
+        ChickenBiomeModifiers.SERIALIZERS.register(modEventBus);
         modEventBus.addListener(ChickensMod::onAttributes);
         modEventBus.addListener(ChickensMod::onCapabilities);
         modEventBus.addListener(ChickensMod::onSpawnPlacements);
