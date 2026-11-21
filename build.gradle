@@ -81,7 +81,10 @@ tasks.named('build') {
 
 // Preserve the upstream MIT copyright notice in the distributable JAR.
 tasks.named('jar', Jar) {
-    from('LICENSE-original-MIT.txt', 'LICENSE-roost-MIT.txt') {
+    from('LICENSE-original-MIT.txt') {
+        into 'META-INF'
+    }
+    from('LICENSE-roost-MIT.txt') {
         into 'META-INF'
     }
 }
