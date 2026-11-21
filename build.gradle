@@ -41,3 +41,11 @@ dependencies {
 tasks.named('test', Test) {
     useJUnitPlatform()
 }
+
+// Keep the version displayed by NeoForge in sync with the Gradle artifact.
+tasks.named('processResources', ProcessResources) {
+    inputs.property('mod_version', project.mod_version)
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand(mod_version: project.mod_version)
+    }
+}

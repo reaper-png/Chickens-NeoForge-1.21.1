@@ -1,28 +1,51 @@
 # Chickens — NeoForge 1.21.1
 
-Port não oficial do mod **Chickens** 1.0.32 (Minecraft 1.18.2) para **Minecraft 1.21.1 / NeoForge / Java 21**.
+Unofficial port of CreeperHost **Chickens 1.0.32** (Minecraft 1.18.2) to **Minecraft 1.21.1 / NeoForge / Java 21**.
 
-## Objetivo
+## Status: work in progress, not a validated release
 
-Preservar a experiência e os identificadores do mod original, com compatibilidade funcional na 1.21.1. Referência original: CreeperHost Chickens 1.0.32.
+The repository contains the port's Java sources, resources and automated tests. This is **not** a statement that the mod has passed full multiplayer, dedicated-server or long-running world tests.
 
-## Estado do port
+Implemented or under active verification:
 
-- Migração e registro do catálogo de 46 espécies e recursos associados.
-- Migração de receitas, reprodução, crescimento e produção.
-- Adaptação de dados NBT para os componentes da versão atual.
-- Ovos líquidos, Roost e Breeder: implementações e correções em teste.
-- Renderização 3D de galinhas em itens e no Roost: ajustes recentes, pendentes de integração com a cópia local definitiva.
-- **Etapa 6:** spawn natural, em desenvolvimento / validação.
+- All 46 legacy chicken species, metadata-based chicken items and corresponding textures.
+- Chicken breeding, weighted pedigrees, genetic statistics, resource laying and natural spawning.
+- Roost, Breeder and six Henhouse variants with inventories, output processing and automation.
+- Item capture/release, colored eggs, liquid eggs (water and lava), analyzer and Smart Chicken conversion.
+- Optional JEI and Jade integration; client entity, item and Roost rendering.
+- World and item NBT migration paths and JUnit regression checks.
 
-> **Atenção:** este repositório está em fase de inicialização. O código-fonte completo ainda precisa ser enviado a partir da cópia local mais recente. Este README não significa que o port já esteja pronto para publicação.
+For detailed stage-by-stage changes, review the merged GitHub pull requests and the `docs/` directory.
 
-## Organização sugerida
+## Building and testing
 
-O projeto deve conter `src/main/java`, `src/main/resources`, `build.gradle`, `settings.gradle`, `gradle.properties` e, quando disponível, o Gradle Wrapper (`gradlew`, `gradlew.bat`, `gradle/wrapper`).
+**Requirements:** JDK 21, working Gradle Wrapper and network access for development dependencies.
 
-Não versionar as pastas `build/`, `.gradle/` ou `run/`, nem JARs gerados. Usar commits separados por etapa e testar cada alteração antes de consolidar na `main`.
+On Windows:
 
-## Créditos e licença
+```powershell
+.\gradlew.bat clean build
+```
 
-Projeto derivado do Chickens original da CreeperHost. Preservar os avisos e a licença do projeto original nos arquivos relevantes.
+To start local development environments:
+
+```powershell
+.\gradlew.bat runClient
+.\gradlew.bat runServer
+```
+
+Never assume a successful Gradle build proves that the mod works in-game. Before publishing, test a clean client, dedicated server without optional mods, multiplayer, item/tank automation, machine saving/reloading, all chicken species, and loaded entity performance.
+
+## Versions and metadata
+
+The version is controlled by `mod_version` in `gradle.properties`. Gradle also inserts that value into the packaged `META-INF/neoforge.mods.toml`. The current version is `0.0.1-wip`; do **not** tag it as stable solely because this README was updated.
+
+Minecraft support: 1.21.1. NeoForge: configured in `gradle.properties`. Java: 21.
+
+## Compatibility and distribution
+
+JEI/Jade are optional integrations rather than bundled dependencies. Preserve original registry IDs and item/NBT formats when updating the port. Do not distribute builds as stable before verifying license attribution and the original project's redistribution terms.
+
+## Credits and license
+
+Original mod: CreeperHost Chickens, including credits to CreeperHost and gigabit101. This is an unofficial community port, not a release by the original authors. The metadata currently declares MIT; **verify the original project's license and the attribution/redistribution requirements before a public release**, and retain all notices required by the source.

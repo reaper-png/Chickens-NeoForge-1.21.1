@@ -3,7 +3,7 @@ loaderVersion="[4,)"
 license="MIT"
 [[mods]]
 modId="chickens"
-version="0.0.1-wip"
+version="\${mod_version}"
 displayName="Chickens"
 authors="CreeperHost, gigabit101 (original), community port in progress"
 description="Direct port of original CreeperHost Chickens 1.0.32. Work in progress: not feature complete."
