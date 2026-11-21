@@ -2,6 +2,7 @@ package net.creeperhost.chickens.entity;
 
 import net.creeperhost.chickens.init.ModEntities;
 import net.creeperhost.chickens.init.ModItems;
+import net.creeperhost.chickens.item.ColoredEggSpecies;
 import net.creeperhost.chickens.registry.ChickenSpecies;
 import net.creeperhost.chickens.registry.ChickensRegistry;
 import net.minecraft.core.HolderLookup;
