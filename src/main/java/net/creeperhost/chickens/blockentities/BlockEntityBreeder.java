@@ -35,6 +35,8 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
         @Override public int getCount() { return 1; }
     };
     private int progress;
+    // The result is rolled once per cycle, then retained while output slots are blocked.
+    private ItemStack pendingOffspring = ItemStack.EMPTY;
 
     public BlockEntityBreeder(BlockPos pos, BlockState state) { super(ModBlocks.BREEDER_TILE.get(), pos, state); }
     public MachineInventory inventory() { return inventory; }
@@ -42,7 +44,13 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
     public ContainerData data() { return data; }
     public int progress() { return progress; }
 
-    private void onInventoryChanged(int slot) { if (slot <= 2) progress = 0; setChanged(); }
+    private void onInventoryChanged(int slot) {
+        if (slot <= 2) {
+            progress = 0;
+            pendingOffspring = ItemStack.EMPTY;
+        }
+        setChanged();
+    }
 
     public static void tick(Level level, BlockPos pos, BlockState state, BlockEntityBreeder breeder) {
         if (level.isClientSide) return;
@@ -61,20 +69,39 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
                         .setValue(net.creeperhost.chickens.block.BlockBreeder.IS_BREEDING, willBreed), 3);
             }
         }
-        if (!active) { breeder.setProgress(0); return; }
+        if (!active) {
+            if (!breeder.pendingOffspring.isEmpty()) {
+                breeder.pendingOffspring = ItemStack.EMPTY;
+                breeder.setChanged();
+            }
+            breeder.setProgress(0);
+            return;
+        }
         if (breeder.progress <= 1000) { breeder.setProgress(breeder.progress + 1); return; }
 
-        ChickenSpecies child = ChickensRegistry.getRandomChild(first, second, level.random::nextInt);
-        if (child == null) { breeder.setProgress(0); return; }
-        ItemStack result = ChickenItemData.create(ModItems.CHICKEN_ITEM.get(), child);
-        ChickenItemData.write(result, child, ChickenGenetics.offspring(first, second, child,
-                ChickenStatsCodec.read(parentA), ChickenStatsCodec.read(parentB), level.random::nextInt));
-        if (!MachineOutputs.canInsert(breeder.inventory, 3, result)) return;
-        // Consume seeds only after the output has been fully accepted.
-        if (MachineOutputs.insert(breeder.inventory, 3, result)) {
+        if (breeder.pendingOffspring.isEmpty()) {
+            ChickenSpecies child = ChickensRegistry.getRandomChild(first, second, level.random::nextInt);
+            if (child == null) {
+                breeder.setProgress(0);
+                return;
+            }
+            ItemStack result = ChickenItemData.create(ModItems.CHICKEN_ITEM.get(), child);
+            ChickenItemData.write(result, child, ChickenGenetics.offspring(first, second, child,
+                    ChickenStatsCodec.read(parentA), ChickenStatsCodec.read(parentB), level.random::nextInt));
+            breeder.pendingOffspring = result;
+            breeder.setChanged();
+        }
+
+        // A completed result stays fixed while all output slots are blocked.
+        if (!MachineOutputs.canInsert(breeder.inventory, 3, breeder.pendingOffspring)) return;
+
+        // Only spend seeds after insertion succeeds. The seed-slot change also
+        // invalidates the pending outcome and resets the next production cycle.
+        if (MachineOutputs.insert(breeder.inventory, 3, breeder.pendingOffspring)) {
             ItemStack nextSeeds = seeds.copy();
             nextSeeds.shrink(1);
             breeder.inventory.setStackInSlot(2, nextSeeds);
+            breeder.pendingOffspring = ItemStack.EMPTY;
             breeder.setProgress(0);
             level.playSound(null, pos, SoundEvents.CHICKEN_EGG, SoundSource.BLOCKS, 0.5f, 0.8f);
         }
@@ -90,12 +117,18 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
         super.saveAdditional(tag, registries);
         tag.put("Inventory", inventory.serializeNBT(registries));
         tag.putInt("progress", progress);
+        if (!pendingOffspring.isEmpty()) {
+            tag.put("PendingOffspring", pendingOffspring.save(registries));
+        }
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.contains("Inventory", 10)) inventory.deserializeNBT(registries, tag.getCompound("Inventory"));
         else if (tag.contains("Items", 9)) inventory.deserializeNBT(registries, tag);
         progress = Math.max(0, tag.getInt("progress"));
+        pendingOffspring = tag.contains("PendingOffspring", 10)
+                ? ItemStack.parseOptional(registries, tag.getCompound("PendingOffspring"))
+                : ItemStack.EMPTY;
     }
 
     @Override public Component getDisplayName() { return Component.translatable("block.chickens.breeder"); }
