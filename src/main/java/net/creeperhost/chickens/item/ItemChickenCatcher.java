@@ -5,6 +5,7 @@ import net.creeperhost.chickens.init.ModItems;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,12 @@ public final class ItemChickenCatcher extends Item {
         ChickenItemData.saveCapturedState(captured, chicken.getAge(), chicken.getInLoveTime(),
                 chicken.isAnalyzed());
         ChickenItemData.saveCapturedLayTicks(captured, chicken.getLayTicks());
-        if (!player.getInventory().add(captured)) player.drop(captured, false);
+        // Original Chickens 1.0.32 spawned the captured item at the
+        // chicken's location; it was never inserted straight into inventory.
+        ItemEntity dropped = new ItemEntity(player.level(),
+                chicken.getX(), chicken.getY(), chicken.getZ(), captured);
+        dropped.setDefaultPickUpDelay();
+        if (!player.level().addFreshEntity(dropped)) return InteractionResult.FAIL;
         chicken.discard();
         return InteractionResult.SUCCESS;
     }
