@@ -11,7 +11,7 @@ Release readiness is a checklist, not a declaration of stability.
 - [ ] Test saved and upgraded worlds, legacy item NBT, capture/release, partly completed cycles and pending Breeder results.
 - [ ] Test water/lava liquid eggs into supported tanks and world placement.
 - [ ] Profile MSPT/TPS with many chickens and machine block entities. Record baselines.
-- [ ] Verify upstream Chickens 1.0.32 license and attribution/redistribution terms. Do not assume the current MIT metadata is authoritative for upstream assets/code.
+- [x] Compare the preserved upstream MIT notice to the [CreeperHost Chickens repository](https://github.com/CreeperHost/Chickens/blob/master/LICENSE.txt); package the notice in the built JAR and verify its presence automatically (stage 94).\n- [ ] Review provenance/permissions of any third-party Roost code/assets beyond that upstream MIT notice before public distribution.
 - [ ] Only after passing the above, choose an actual release version and create a changelog/release artifact.
 
-**The assistant has not run the build, runtime tests, or license due diligence.**
+**Validation scope:** GitHub Actions runs the Java 21 build and source/package tests. The maintainer reports testing each PR on a server throughout development. This historical testing is acknowledged; it is not equivalent to a recorded result for every scenario above. The assistant has not personally run Minecraft runtime tests. Do not rerun completed cases without an affected change or a reproducible regression.

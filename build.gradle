@@ -79,6 +79,13 @@ tasks.named('build') {
 }
 
 
+// Preserve the upstream MIT copyright notice in the distributable JAR.
+tasks.named('jar', Jar) {
+    from('LICENSE-original-MIT.txt') {
+        into 'META-INF'
+    }
+}
+
 // Catch broken release artifacts, not just missing source resources: 46 chicken
 // skins and corresponding loot tables plus the eight machine block drops
 // must actually be present inside the published JAR.
@@ -96,6 +103,7 @@ tasks.register('verifyPackagedChickensAssets') {
                       'henhouse_birch', 'henhouse_dark_oak', 'henhouse_jungle', 'henhouse_spruce']
         def required = new LinkedHashSet<String>()
         required.add('META-INF/neoforge.mods.toml')
+        required.add('META-INF/LICENSE-original-MIT.txt')
         entityLootFiles.each { loot ->
             def species = loot.name.substring(0, loot.name.length() - '.json'.length())
             required.add("data/chickens/loot_table/entities/${loot.name}")
