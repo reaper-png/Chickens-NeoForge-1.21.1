@@ -25,15 +25,16 @@ public final class SmartChickenConversion {
             return;
         }
 
+        if (!SpeciesLayConfig.isEnabled("smart_chicken")) {
+            return;
+        }
+
         if (event.getLevel().isClientSide()) {
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
             return;
         }
 
-        if (!SpeciesLayConfig.isEnabled("smart_chicken")) {
-            return;
-        }
         var species = ChickensRegistry.getByRegistryName("smart_chicken");
         if (species == null) {
             return;
