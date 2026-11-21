@@ -1,6 +1,7 @@
 package net.creeperhost.chickens.events;
 
 import net.creeperhost.chickens.entity.EntityChickensChicken;
+import net.creeperhost.chickens.config.SpeciesLayConfig;
 import net.creeperhost.chickens.init.ModEntities;
 import net.creeperhost.chickens.registry.ChickensRegistry;
 import net.minecraft.world.InteractionResult;
@@ -30,6 +31,9 @@ public final class SmartChickenConversion {
             return;
         }
 
+        if (!SpeciesLayConfig.isEnabled("smart_chicken")) {
+            return;
+        }
         var species = ChickensRegistry.getByRegistryName("smart_chicken");
         if (species == null) {
             return;
