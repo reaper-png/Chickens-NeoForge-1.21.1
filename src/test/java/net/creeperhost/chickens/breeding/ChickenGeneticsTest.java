@@ -80,4 +80,19 @@ final class ChickenGeneticsTest {
         assertEquals(10, child.getStrength());
     }
 
+    @Test
+    void matchesOriginalMutationRollOrderGrowthGainStrength() {
+        var coal = ChickensRegistry.getByRegistryName("coal_chicken");
+        var rolls = new java.util.concurrent.atomic.AtomicInteger();
+        ChickenStats child = ChickenGenetics.offspring(coal, coal, coal,
+                new ChickenStats(3, 4, 5), new ChickenStats(3, 4, 5), bound -> {
+                    assertEquals(2, bound);
+                    return rolls.getAndIncrement() == 1 ? 1 : 0;
+                });
+        assertEquals(3, rolls.get());
+        assertEquals(5, child.getGrowth()); // first roll: +1
+        assertEquals(5, child.getGain());   // second roll: +2
+        assertEquals(6, child.getStrength()); // third roll: +1
+    }
+
 }
