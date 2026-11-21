@@ -48,9 +48,8 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
         // Replenishing valid seeds must not discard an in-progress cycle.
         // Parent edits, removing the last valid seed, and changes during a
         // completed pending cycle still invalidate the current outcome.
-        if (slot < 2 || (slot == 2
-                && (!inventory.getStackInSlot(2).is(Tags.Items.SEEDS)
-                || !pendingOffspring.isEmpty()))) {
+        if (BreederProgressPolicy.invalidates(slot,
+                inventory.getStackInSlot(2).is(Tags.Items.SEEDS), !pendingOffspring.isEmpty())) {
             progress = 0;
             pendingOffspring = ItemStack.EMPTY;
         }
