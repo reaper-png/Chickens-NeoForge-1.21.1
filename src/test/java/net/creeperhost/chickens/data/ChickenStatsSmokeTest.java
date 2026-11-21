@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** Basic regression tests for the legacy ChickenStats behavior. */
+/** Basic regression tests for ChickenStats defaults and 1..10 validation. */
 final class ChickenStatsSmokeTest {
     @Test
     void defaultsToOne() {
@@ -23,10 +23,10 @@ final class ChickenStatsSmokeTest {
     }
 
     @Test
-    void preservesLegacyLowerBoundBehavior() {
+    void clampsValuesBelowOne() {
         ChickenStats stats = new ChickenStats(-1, 0, -2);
-        assertEquals(-1, stats.getGain());
-        assertEquals(0, stats.getGrowth());
-        assertEquals(-2, stats.getStrength());
+        assertEquals(1, stats.getGain());
+        assertEquals(1, stats.getGrowth());
+        assertEquals(1, stats.getStrength());
     }
 }
