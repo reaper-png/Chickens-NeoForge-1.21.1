@@ -24,6 +24,8 @@ import net.minecraft.world.phys.Vec3;
 /** Original Henhouse collection: hay -> energy -> collected items + dirt. */
 public final class BlockEntityHenhouse extends BlockEntity implements MenuProvider {
     private static final int RANGE = 5;
+    // Reused across collections: closest offsets first, with original tie order.
+    private static final List<BlockPos> NEAREST_OFFSETS = nearestOffsets();
     private final HenhouseInventory inventory = new HenhouseInventory(this::setChanged);
     private final HenhouseAutomation automation = new HenhouseAutomation(inventory);
     private final ContainerData data = new ContainerData() {
@@ -45,20 +47,32 @@ public final class BlockEntityHenhouse extends BlockEntity implements MenuProvid
     public static ItemStack collectNearby(Level level, Vec3 chickenPos, ItemStack dropped) {
         if (dropped.isEmpty() || level.isClientSide) return dropped;
         BlockPos center = BlockPos.containing(chickenPos);
-        List<BlockEntityHenhouse> nearby = new ArrayList<>();
-        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-RANGE, -RANGE, -RANGE),
-                                                   center.offset(RANGE, RANGE, RANGE))) {
-            if (level.hasChunkAt(pos) && level.getBlockEntity(pos) instanceof BlockEntityHenhouse henhouse) {
-                nearby.add(henhouse);
+        ItemStack remaining = dropped.copy();
+        for (BlockPos offset : NEAREST_OFFSETS) {
+            BlockPos pos = center.offset(offset);
+            if (!level.hasChunkAt(pos)) continue; // Never force chunk loads.
+            if (level.getBlockEntity(pos) instanceof BlockEntityHenhouse henhouse) {
+                remaining = henhouse.accept(remaining);
+                if (remaining.isEmpty()) break;
             }
         }
-        nearby.sort(Comparator.comparingDouble(h -> h.getBlockPos().distSqr(center)));
-        ItemStack remaining = dropped.copy();
-        for (BlockEntityHenhouse henhouse : nearby) {
-            remaining = henhouse.accept(remaining);
-            if (remaining.isEmpty()) break;
-        }
         return remaining;
+    }
+
+    /**
+     * Stable, closest-first traversal of the same 11x11x11 neighbourhood.
+     * Sorting once also avoids allocating/sorting a Henhouse list for each egg.
+     */
+    private static List<BlockPos> nearestOffsets() {
+        List<BlockPos> offsets = new ArrayList<>();
+        BlockPos origin = BlockPos.ZERO;
+        for (BlockPos pos : BlockPos.betweenClosed(
+                origin.offset(-RANGE, -RANGE, -RANGE),
+                origin.offset(RANGE, RANGE, RANGE))) {
+            offsets.add(pos.immutable());
+        }
+        offsets.sort(Comparator.comparingLong(pos -> pos.distSqr(origin)));
+        return List.copyOf(offsets);
     }
 
     /** Inserts only the amount that fits both outputs and fuel byproducts. */
