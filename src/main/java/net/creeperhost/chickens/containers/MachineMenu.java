@@ -9,6 +9,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
@@ -17,14 +18,17 @@ public abstract class MachineMenu extends AbstractContainerMenu {
     protected final MachineInventory contents;
     private final ContainerLevelAccess access;
     private final Block block;
+    private final BlockEntity openedMachine;
     private final ContainerData data;
 
     protected MachineMenu(MenuType<?> type, int id, Inventory playerInv, MachineInventory contents,
-                          ContainerData data, ContainerLevelAccess access, Block block) {
+                          ContainerData data, ContainerLevelAccess access, Block block,
+                          BlockEntity openedMachine) {
         super(type, id);
         this.contents = contents;
         this.access = access;
         this.block = block;
+        this.openedMachine = openedMachine;
         this.data = data;
         for (int i = 0; i < contents.getSlots(); i++) {
             int x;
@@ -48,7 +52,11 @@ public abstract class MachineMenu extends AbstractContainerMenu {
     }
 
     public int progress() { return data.get(0); }
-    @Override public boolean stillValid(Player player) { return AbstractContainerMenu.stillValid(access, player, block); }
+    @Override public boolean stillValid(Player player) {
+        return AbstractContainerMenu.stillValid(access, player, block)
+                && access.evaluate((level, pos) ->
+                        openedMachine != null && level.getBlockEntity(pos) == openedMachine, true);
+    }
     @Override public ItemStack quickMoveStack(Player player, int slotIndex) {
         if (slotIndex < 0 || slotIndex >= this.slots.size()) return ItemStack.EMPTY;
         Slot slot = this.slots.get(slotIndex);

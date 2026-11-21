@@ -12,10 +12,10 @@ public final class RoostMenu extends MachineMenu {
     public RoostMenu(int id, Inventory playerInv) {
         super(ModMenus.ROOST.get(), id, playerInv,
                 new MachineInventory(MachineInventory.Kind.ROOST, ignored -> {}),
-                new SimpleContainerData(1), ContainerLevelAccess.NULL, ModBlocks.ROOST.get());
+                new SimpleContainerData(1), ContainerLevelAccess.NULL, ModBlocks.ROOST.get(), null);
     }
     public RoostMenu(int id, Inventory playerInv, BlockEntityRoost machine) {
         super(ModMenus.ROOST.get(), id, playerInv, machine.inventory(), machine.data(),
-                ContainerLevelAccess.create(machine.getLevel(), machine.getBlockPos()), ModBlocks.ROOST.get());
+                ContainerLevelAccess.create(machine.getLevel(), machine.getBlockPos()), ModBlocks.ROOST.get(), machine);
     }
 }
