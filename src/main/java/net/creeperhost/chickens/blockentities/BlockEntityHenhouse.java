@@ -71,7 +71,7 @@ public final class BlockEntityHenhouse extends BlockEntity implements MenuProvid
                 origin.offset(RANGE, RANGE, RANGE))) {
             offsets.add(pos.immutable());
         }
-        offsets.sort(Comparator.comparingLong(pos -> pos.distSqr(origin)));
+        offsets.sort(Comparator.comparingDouble(pos -> pos.distSqr(origin)));
         return List.copyOf(offsets);
     }
 
