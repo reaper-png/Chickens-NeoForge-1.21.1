@@ -34,7 +34,7 @@ final class ChickensRegistryTest {
         Random random = new Random(42);
         int coalCount = 0;
         for (int i = 0; i < 1000; i++) {
-            ChickenSpecies child = ChickensRegistry.getRandomChild(flint, log, random::nextInt);
+            ChickenSpecies child = ChickensRegistry.getRandomChild(flint, log, random::nextInt, species -> true);
             assertTrue(child == flint || child == log || child == coal);
             if (child == coal) coalCount++;
         }
@@ -42,8 +42,29 @@ final class ChickensRegistryTest {
     }
 
     @Test
+    void disabledOffspringAreExcludedButParentsKeepTheirOriginalWeights() {
+        var flint = ChickensRegistry.getByRegistryName("flint_chicken");
+        var log = ChickensRegistry.getByRegistryName("log_chicken");
+        var coal = ChickensRegistry.getByRegistryName("coal_chicken");
+        Random random = new Random(42);
+        for (int i = 0; i < 100; i++) {
+            ChickenSpecies child = ChickensRegistry.getRandomChild(flint, log,
+                    random::nextInt, species -> species != coal);
+            assertTrue(child == flint || child == log);
+        }
+    }
+
+    @Test
+    void disabledParentStopsBreeding() {
+        var flint = ChickensRegistry.getByRegistryName("flint_chicken");
+        var log = ChickensRegistry.getByRegistryName("log_chicken");
+        assertNull(ChickensRegistry.getRandomChild(flint, log, bound -> 0,
+                species -> species != flint));
+    }
+
+    @Test
     void sameSpeciesParentsRetainTheOriginalDoubleWeight() {
         var smart = ChickensRegistry.getByRegistryName("smart_chicken");
-        assertSame(smart, ChickensRegistry.getRandomChild(smart, smart, max -> 0));
+        assertSame(smart, ChickensRegistry.getRandomChild(smart, smart, max -> 0, species -> true));
     }
 }
