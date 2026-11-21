@@ -61,6 +61,16 @@ public final class ChickenProducts {
         Item item = BuiltInRegistries.ITEM.get(resource);
         if (item == Items.AIR) return ItemStack.EMPTY;
 
+        // These legacy IDs represent variants, not usable standalone items.
+        // Chicken species / colored eggs require CUSTOM_DATA containing their
+        // species ID. The configurable descriptor syntax cannot supply it.
+        // Reject empty variants rather than generating unusable items.
+        if (resource.equals(ResourceLocation.fromNamespaceAndPath("chickens", "chicken_item"))
+                || resource.equals(ResourceLocation.fromNamespaceAndPath("chickens", "spawn_egg"))
+                || resource.equals(ResourceLocation.fromNamespaceAndPath("chickens", "colored_egg"))) {
+            return ItemStack.EMPTY;
+        }
+
         boolean liquidEgg = resource.equals(ResourceLocation.fromNamespaceAndPath("chickens", "liquid_egg"));
         // A liquid egg must always carry its original water/lava fluid ID.
         // The bare item ID creates an unusable egg without CUSTOM_DATA.id.
