@@ -36,7 +36,7 @@ public final class ChickenItemRenderer extends BlockEntityWithoutLevelRenderer {
 
     // GUI-only scale: keep adult chicken geometry inside a 16x16 inventory slot.
     // Do not change ground/hand scale or actual entity dimensions.
-    private static final float GUI_SCALE = 0.55F;
+    private static final float GUI_SCALE = 0.85F;
 
     public ChickenItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(),
