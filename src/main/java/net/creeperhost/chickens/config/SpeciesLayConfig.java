@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 
 /**
  * Reads the legacy Chickens config/chickens/chickens.json structure.
- * Only lay_coefficient is active; never reinterpret unported legacy fields.
+ * Supports lay_coefficient and is_enabled; other original fields are not interpreted.
  */
 public final class SpeciesLayConfig {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -52,7 +52,7 @@ public final class SpeciesLayConfig {
     }
 
     /**
-     * Adds missing registered species and missing lay_coefficient properties only.
+     * Adds missing registered species and active configuration properties only.
      * Leaves all existing values, unknown keys and other JSON settings untouched.
      */
     static boolean addMissingSpecies(JsonObject root) {
@@ -100,7 +100,7 @@ public final class SpeciesLayConfig {
                     JsonElement parsed = JsonParser.parseReader(reader);
                     if (!parsed.isJsonObject()) {
                         LOGGER.warn("Chickens species config must be a JSON object; leaving it unchanged: {}", configFile);
-                        return Map.of();
+                        return defaults();
                     }
                     root = parsed.getAsJsonObject();
                 }
@@ -152,7 +152,7 @@ public final class SpeciesLayConfig {
             return new Settings(Collections.unmodifiableMap(loaded), Collections.unmodifiableMap(enabled));
         } catch (IOException | RuntimeException error) {
             LOGGER.error("Failed to load Chickens species config {}; using defaults", configFile, error);
-            return Map.of();
+            return defaults();
         }
     }
 }
