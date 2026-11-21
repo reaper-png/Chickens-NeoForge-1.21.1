@@ -4,6 +4,7 @@ import net.creeperhost.chickens.events.SmartChickenConversion;
 import net.creeperhost.chickens.events.ChickenDeathDrops;
 import net.creeperhost.chickens.config.ChickensConfig;
 import net.creeperhost.chickens.config.SpeciesLayConfig;
+import net.creeperhost.chickens.config.SpawnChance;
 import net.creeperhost.chickens.init.ModBlocks;
 import net.creeperhost.chickens.init.ModCreativeTabs;
 import net.creeperhost.chickens.init.ModEntities;
@@ -13,6 +14,7 @@ import net.creeperhost.chickens.item.LiquidEggItemHandler;
 import net.creeperhost.chickens.registry.ChickenSpecies;
 import net.creeperhost.chickens.registry.ChickensRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -81,13 +83,13 @@ public final class ChickensMod {
                     holder.get(),
                     SpawnPlacementTypes.ON_GROUND,
                     Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                    (type, level, reason, pos, random) -> canNaturallySpawn(species, level, pos),
+                    (type, level, reason, pos, random) -> canNaturallySpawn(species, level, pos, random),
                     RegisterSpawnPlacementsEvent.Operation.REPLACE);
         }
     }
 
     private static boolean canNaturallySpawn(
-            ChickenSpecies species, ServerLevelAccessor level, BlockPos pos) {
+            ChickenSpecies species, ServerLevelAccessor level, BlockPos pos, RandomSource random) {
         if (!SpeciesLayConfig.isEnabled(species.id())) {
             return false;
         }
@@ -97,12 +99,14 @@ public final class ChickensMod {
         if (level.getRawBrightness(pos, 0) <= 8) {
             return false;
         }
-        return switch (species.spawnType()) {
+        boolean allowedDimension = switch (species.spawnType()) {
             case NONE -> false;
             case NORMAL -> level.dimensionType().hasSkyLight();
             case HELL -> level.dimensionType().ultraWarm();
             case SNOW -> true; // The original SNOW predicate has no dimension check.
         };
+        return allowedDimension && SpawnChance.allows(
+                SpeciesLayConfig.naturalSpawnChanceFor(species.id()), random::nextInt);
     }
 
     private static void onAttributes(EntityAttributeCreationEvent event) {
