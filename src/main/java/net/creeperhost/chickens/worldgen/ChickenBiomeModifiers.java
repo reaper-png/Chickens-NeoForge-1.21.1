@@ -2,7 +2,7 @@ package net.creeperhost.chickens.worldgen;
 
 import com.mojang.serialization.MapCodec;
 import net.creeperhost.chickens.ChickensMod;
-import net.neoforged.neoforge.common.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
