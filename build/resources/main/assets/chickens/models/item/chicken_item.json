@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:builtin/entity",
-  "gui_light": "side",
-  "textures": {
-    "particle": "chickens:item/chicken_item_base"
-  }
-}

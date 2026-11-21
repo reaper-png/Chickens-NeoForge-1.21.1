@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="net.creeperhost.chickens.item.LiquidEggTypeTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-20T20:15:48.165Z" hostname="DESKTOP-OD6OOLF" time="0.004">
-  <properties/>
-  <testcase name="resolvesOnlyTheTwoOriginalFluids()" classname="net.creeperhost.chickens.item.LiquidEggTypeTest" time="0.002"/>
-  <testcase name="maintainsExactLegacyIds()" classname="net.creeperhost.chickens.item.LiquidEggTypeTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

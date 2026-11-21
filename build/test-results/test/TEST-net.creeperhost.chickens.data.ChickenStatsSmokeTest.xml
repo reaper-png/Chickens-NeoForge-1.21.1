@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="net.creeperhost.chickens.data.ChickenStatsSmokeTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-20T20:15:48.162Z" hostname="DESKTOP-OD6OOLF" time="0.002">
-  <properties/>
-  <testcase name="clampsValuesAboveTen()" classname="net.creeperhost.chickens.data.ChickenStatsSmokeTest" time="0.0"/>
-  <testcase name="defaultsToOne()" classname="net.creeperhost.chickens.data.ChickenStatsSmokeTest" time="0.0"/>
-  <testcase name="preservesLegacyLowerBoundBehavior()" classname="net.creeperhost.chickens.data.ChickenStatsSmokeTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

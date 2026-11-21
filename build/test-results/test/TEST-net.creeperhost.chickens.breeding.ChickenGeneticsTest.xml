@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="net.creeperhost.chickens.breeding.ChickenGeneticsTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-20T20:15:48.140Z" hostname="DESKTOP-OD6OOLF" time="0.009">
-  <properties/>
-  <testcase name="parentsPassStatsWhenChildIsOneOfThem()" classname="net.creeperhost.chickens.breeding.ChickenGeneticsTest" time="0.007"/>
-  <testcase name="newSpeciesBeginWithDefaultStats()" classname="net.creeperhost.chickens.breeding.ChickenGeneticsTest" time="0.001"/>
-  <testcase name="mutationChangesStatsWithinLegacyLimits()" classname="net.creeperhost.chickens.breeding.ChickenGeneticsTest" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
