@@ -12,10 +12,10 @@ public final class BreederMenu extends MachineMenu {
     public BreederMenu(int id, Inventory playerInv) {
         super(ModMenus.BREEDER.get(), id, playerInv,
                 new MachineInventory(MachineInventory.Kind.BREEDER, ignored -> {}),
-                new SimpleContainerData(1), ContainerLevelAccess.NULL, ModBlocks.BREEDER.get());
+                new SimpleContainerData(1), ContainerLevelAccess.NULL, ModBlocks.BREEDER.get(), null);
     }
     public BreederMenu(int id, Inventory playerInv, BlockEntityBreeder machine) {
         super(ModMenus.BREEDER.get(), id, playerInv, machine.inventory(), machine.data(),
-                ContainerLevelAccess.create(machine.getLevel(), machine.getBlockPos()), ModBlocks.BREEDER.get());
+                ContainerLevelAccess.create(machine.getLevel(), machine.getBlockPos()), ModBlocks.BREEDER.get(), machine);
     }
 }
