@@ -7,6 +7,11 @@ import net.creeperhost.chickens.item.LiquidEggType;
 import net.creeperhost.chickens.registry.ChickenSpecies;
 import net.creeperhost.chickens.registry.ChickensRegistry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.component.CustomData;
+import java.util.Locale;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -31,6 +36,19 @@ public final class ModCreativeTabs {
                         // Keep registry IDs and type metadata identical.
                         for (ChickenSpecies type : ChickensRegistry.getItems()) {
                             output.accept(ChickenItemData.create(ModItems.SPAWN_EGG.get(), type));
+                        }
+                        // The original creative inventory also exposes all
+                        // 16 dye-colored throwable eggs, not only chicken items.
+                        for (ChickenSpecies type : ChickensRegistry.getItems()) {
+                            if (type.dyeColor().isEmpty()) continue;
+                            ItemStack egg = new ItemStack(ModItems.COLOURED_EGG.get());
+                            int colourId = DyeColor.valueOf(
+                                    type.dyeColor().toUpperCase(Locale.ROOT)).getId();
+                            CustomData.update(DataComponents.CUSTOM_DATA, egg, tag -> {
+                                tag.putString("id", "chickens:" + type.id());
+                                tag.putInt("colourid", colourId);
+                            });
+                            output.accept(egg);
                         }
                         // Liquid eggs remain distinct from chicken entities and must be
                         // discoverable as usable items, as in the original mod.
