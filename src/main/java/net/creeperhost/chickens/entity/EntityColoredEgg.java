@@ -2,6 +2,7 @@ package net.creeperhost.chickens.entity;
 
 import net.creeperhost.chickens.init.ModEntities;
 import net.creeperhost.chickens.init.ModItems;
+import net.creeperhost.chickens.item.ColoredEggSpecies;
 import net.creeperhost.chickens.registry.ChickenSpecies;
 import net.creeperhost.chickens.registry.ChickensRegistry;
 import net.minecraft.core.HolderLookup;
@@ -37,7 +38,7 @@ public final class EntityColoredEgg extends ThrowableItemProjectile {
         super.onHit(hit);
         if (!level().isClientSide) {
             ChickenSpecies species = ChickensRegistry.getByRegistryName(entityData.get(CHICKEN_TYPE));
-            if (species != null) {
+            if (ColoredEggSpecies.isEligible(species)) {
                 int count = ColoredEggHatching.hatchCount(random::nextInt);
                 for (int i = 0; i < count; i++) {
                     EntityChickensChicken chicken = ModEntities.create(species, level());
