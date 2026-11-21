@@ -100,7 +100,7 @@ public final class BlockEntityRoost extends BlockEntity implements MenuProvider 
         super.loadAdditional(tag, registries);
         if (tag.contains("Inventory", 10)) inventory.deserializeNBT(registries, tag.getCompound("Inventory"));
         else if (tag.contains("Items", 9)) inventory.deserializeNBT(registries, tag); // Old machine save layout
-        progress = Math.max(0, tag.getInt("progress"));
+        progress = MachineProgressRecovery.roost(tag.getInt("progress"));
     }
 
     @Override public Component getDisplayName() { return Component.translatable("block.chickens.roost"); }
