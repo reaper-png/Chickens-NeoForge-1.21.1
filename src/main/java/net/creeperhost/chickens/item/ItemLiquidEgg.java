@@ -14,6 +14,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 /** Legacy one-use liquid egg; accepts tanks and places water/lava like a bucket. */
@@ -62,6 +63,12 @@ public final class ItemLiquidEgg extends Item {
             // generic hand helper receives the full stack, which can contain
             // multiple eggs; use one isolated egg for this tank transfer.
             ItemStack singleEgg = egg.copyWithCount(1);
+            // This container cannot be partially drained: a tank must accept
+            // the complete bucket before any operation is executed.
+            FluidStack bucket = new FluidStack(LiquidEggItemHandler.fluid(singleEgg),
+                    LiquidEggItemHandler.BUCKET_VOLUME);
+            if (tank.fill(bucket, IFluidHandler.FluidAction.SIMULATE)
+                    < LiquidEggItemHandler.BUCKET_VOLUME) return InteractionResult.PASS;
             var transfer = FluidUtil.tryEmptyContainer(singleEgg, tank,
                     LiquidEggItemHandler.BUCKET_VOLUME, player, true);
             if (!transfer.isSuccess()) return InteractionResult.PASS;
