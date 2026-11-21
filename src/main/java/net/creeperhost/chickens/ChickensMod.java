@@ -18,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
@@ -85,13 +86,19 @@ public final class ChickensMod {
                     holder.get(),
                     SpawnPlacementTypes.ON_GROUND,
                     Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                    (type, level, reason, pos, random) -> canNaturallySpawn(species, level, pos, random),
+                    (type, level, reason, pos, random) -> canNaturallySpawn(species, level, reason, pos, random),
                     RegisterSpawnPlacementsEvent.Operation.REPLACE);
         }
     }
 
     private static boolean canNaturallySpawn(
-            ChickenSpecies species, ServerLevelAccessor level, BlockPos pos, RandomSource random) {
+            ChickenSpecies species, ServerLevelAccessor level, MobSpawnType reason,
+            BlockPos pos, RandomSource random) {
+        // Placement restrictions configured for natural spawning must not block
+        // other spawn reasons (commands, eggs, spawners, conversions, etc.).
+        if (reason != MobSpawnType.NATURAL && reason != MobSpawnType.CHUNK_GENERATION) {
+            return true;
+        }
         if (!SpeciesLayConfig.isEnabled(species.id())) {
             return false;
         }
