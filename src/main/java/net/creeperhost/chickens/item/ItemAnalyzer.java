@@ -19,8 +19,13 @@ public final class ItemAnalyzer extends Item {
         if (!player.level().isClientSide) {
             ChickenStats stats = chicken.stats();
             chicken.setAnalyzed(true);
-            player.displayClientMessage(Component.literal("Growth: " + stats.getGrowth()
-                    + " | Gain: " + stats.getGain() + " | Strength: " + stats.getStrength()), true);
+            player.displayClientMessage(
+                    Component.translatable("entity.ChickensChicken.top.growth")
+                            .append(": " + stats.getGrowth() + " | ")
+                            .append(Component.translatable("entity.ChickensChicken.top.gain"))
+                            .append(": " + stats.getGain() + " | ")
+                            .append(Component.translatable("entity.ChickensChicken.top.strength"))
+                            .append(": " + stats.getStrength()), true);
         }
         return InteractionResult.SUCCESS;
     }
