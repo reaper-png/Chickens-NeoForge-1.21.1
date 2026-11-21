@@ -1,5 +1,9 @@
 package net.creeperhost.chickens.item;
 
+import java.util.List;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
+
 import net.creeperhost.chickens.entity.EntityColoredEgg;
 import net.creeperhost.chickens.init.ModEntities;
 import net.creeperhost.chickens.registry.ChickenSpecies;
@@ -16,6 +20,20 @@ import net.minecraft.world.level.Level;
 /** Original throw-and-hatch colored eggs; species retained in CUSTOM_DATA. */
 public final class ItemColoredEgg extends ItemChicken {
     public ItemColoredEgg(Properties properties) { super(properties); }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        ChickenSpecies species = ChickenItemData.type(stack);
+        if (species == null || species.dyeColor().isEmpty()) return super.getName(stack);
+        return Component.translatable("item.colored_egg." + species.dyeColor() + ".name");
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context,
+                                List<Component> tooltip, TooltipFlag flag) {
+        // Unlike captured chickens, colored eggs have no genetic attributes.
+        tooltip.add(Component.translatable("item.colored_egg.tooltip"));
+    }
     @Override public InteractionResult useOn(UseOnContext context) { return InteractionResult.PASS; }
     @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
