@@ -65,6 +65,22 @@ public final class ChickenItemData {
         return root.contains("age_ticks", 3) ? root.getInt("age_ticks") : null;
     }
 
+    /**
+     * Optional timer for items captured with a supported mod version.
+     * Keep absent on older items, which retain their original fresh-cycle behavior.
+     */
+    public static void saveCapturedLayTicks(ItemStack stack, int remainingTicks) {
+        CustomData.update(DataComponents.CUSTOM_DATA, stack,
+                root -> root.putInt("lay_ticks", Math.max(1, remainingTicks)));
+    }
+
+    public static Integer capturedLayTicks(ItemStack stack) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        if (data == null) return null;
+        CompoundTag root = data.copyTag();
+        return root.contains("lay_ticks", 3) ? Math.max(1, root.getInt("lay_ticks")) : null;
+    }
+
     public static boolean wasAnalyzed(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
         return data != null && data.copyTag().getBoolean("analyzed");

@@ -23,6 +23,7 @@ public final class ItemChickenCatcher extends Item {
         net.creeperhost.chickens.data.ChickenStatsCodec.write(captured, chicken.stats());
         ChickenItemData.saveCapturedState(captured, chicken.getAge(), chicken.getInLoveTime(),
                 chicken.isAnalyzed());
+        ChickenItemData.saveCapturedLayTicks(captured, chicken.getLayTicks());
         if (!player.getInventory().add(captured)) player.drop(captured, false);
         chicken.discard();
         return InteractionResult.SUCCESS;
