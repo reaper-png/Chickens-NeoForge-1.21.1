@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.creeperhost.chickens.config.ChickensConfig;
+import net.creeperhost.chickens.config.SpeciesLayConfig;
 import net.creeperhost.chickens.config.SpawnGroupSettings;
 import net.creeperhost.chickens.init.ModEntities;
 import net.creeperhost.chickens.registry.ChickenSpecies;
@@ -32,6 +33,9 @@ public record ConfiguredChickenSpawns(HolderSet<Biome> biomes, String region) im
         SpawnGroupSettings settings = ChickensConfig.spawnGroupSettings();
         if (settings.weight() == 0) return;
         for (ChickenSpecies species : ChickensRegistry.getItems()) {
+            // Disabled breeds should not occupy entries in biome spawn lists.
+            // The spawn-placement predicate remains a second line of defense.
+            if (!SpeciesLayConfig.isEnabled(species.id())) continue;
             boolean isOverworld = region.equals("overworld")
                     && (species.spawnType() == ChickenSpecies.SpawnType.NORMAL
                     || species.spawnType() == ChickenSpecies.SpawnType.SNOW);
