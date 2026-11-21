@@ -12,6 +12,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
@@ -54,6 +56,23 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
             pendingOffspring = ItemStack.EMPTY;
         }
         setChanged();
+        // Input changes affect the Breeder's externally visible block entity.
+        // The open container already handles ordinary slot/progress updates.
+        if (slot < inventory.firstOutput() && level instanceof ServerLevel serverLevel) {
+            serverLevel.getChunkSource().blockChanged(worldPosition);
+        }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        // The menu handles per-tick progress synchronization. The update tag is
+        // for initial chunk tracking and explicit input-slot changes only.
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, BlockEntityBreeder breeder) {
