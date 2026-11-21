@@ -2,14 +2,12 @@ package net.creeperhost.chickens.block;
 
 import com.mojang.serialization.MapCodec;
 import net.creeperhost.chickens.blockentities.BlockEntityRoost;
-import net.creeperhost.chickens.blockentities.MachineInventory;
+import net.creeperhost.chickens.blockentities.MachineInventoryDrops;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,11 +37,7 @@ public final class BlockRoost extends LegacyFacingBlock implements EntityBlock {
     }
     @Override public void onRemove(BlockState state, Level level, BlockPos pos, BlockState nextState, boolean moved) {
         if (!state.is(nextState.getBlock()) && !level.isClientSide && level.getBlockEntity(pos) instanceof BlockEntityRoost roost) {
-            MachineInventory inv = roost.inventory();
-            for (int i = 0; i < inv.getSlots(); i++) {
-                ItemStack stack = inv.getStackInSlot(i);
-                if (!stack.isEmpty()) Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack.copy());
-            }
+            MachineInventoryDrops.drain(level, pos, roost.inventory());
         }
         super.onRemove(state, level, pos, nextState, moved);
     }
