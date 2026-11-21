@@ -152,6 +152,15 @@ public final class BlockEntityBreeder extends BlockEntity implements MenuProvide
         pendingOffspring = tag.contains("PendingOffspring", 10)
                 ? ItemStack.parseOptional(registries, tag.getCompound("PendingOffspring"))
                 : ItemStack.EMPTY;
+        // An incomplete cycle cannot have a committed result. Reject malformed
+        // pending inventory data rather than inserting an unrelated item later.
+        if (!pendingOffspring.isEmpty()
+                && (progress <= 1000 || pendingOffspring.getCount() != 1
+                    || !pendingOffspring.is(ModItems.CHICKEN_ITEM.get())
+                    || ChickenItemData.type(pendingOffspring) == null)) {
+            pendingOffspring = ItemStack.EMPTY;
+            progress = 0;
+        }
     }
 
     @Override public Component getDisplayName() { return Component.translatable("block.chickens.breeder"); }
