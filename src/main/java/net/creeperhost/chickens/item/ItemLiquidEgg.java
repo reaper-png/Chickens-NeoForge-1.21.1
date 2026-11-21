@@ -58,9 +58,17 @@ public final class ItemLiquidEgg extends Item {
                 context.getClickedPos(), context.getClickedFace());
         if (tank != null) {
             if (level.isClientSide) return InteractionResult.SUCCESS;
-            return FluidUtil.interactWithFluidHandler(player, context.getHand(), level,
-                    context.getClickedPos(), context.getClickedFace())
-                    ? InteractionResult.SUCCESS : InteractionResult.PASS;
+            // IFluidHandlerItem always represents a single container. The
+            // generic hand helper receives the full stack, which can contain
+            // multiple eggs; use one isolated egg for this tank transfer.
+            ItemStack singleEgg = egg.copyWithCount(1);
+            var transfer = FluidUtil.tryEmptyContainer(singleEgg, tank,
+                    LiquidEggItemHandler.BUCKET_VOLUME, player, true);
+            if (!transfer.isSuccess()) return InteractionResult.PASS;
+            // The isolated item was consumed, not the stack in the hand.
+            // Only a successful transfer removes one actual egg.
+            egg.shrink(1);
+            return InteractionResult.SUCCESS;
         }
 
         if (level.isClientSide) return InteractionResult.SUCCESS;
