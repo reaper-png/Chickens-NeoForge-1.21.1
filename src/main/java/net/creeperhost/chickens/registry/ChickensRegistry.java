@@ -136,7 +136,7 @@ public final class ChickensRegistry {
     }
     public static int getMaxLayTime(ChickenSpecies type) { return getMinLayTime(type) * 2; }
     public static float getChildChance(ChickenSpecies child) {
-        if (!child.hasParents()) return 0;
+        if (!SpeciesLayConfig.isEnabled(child.id()) || !child.hasParents()) return 0;
         ChickenSpecies a = getByRegistryName(child.parentA());
         ChickenSpecies b = getByRegistryName(child.parentB());
         List<ChickenSpecies> list = new ArrayList<>(List.of(a,b));
